@@ -1,0 +1,153 @@
+package com.csce4623.bbqbuddy.data;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.util.Log;
+import androidx.annotation.NonNull;
+import java.util.ArrayList;
+import java.util.List;
+import util.AppExecutors;
+
+/**
+ * Repository class - implements the DataSource interface
+ */
+public class Repository implements DataSource {
+
+    //Memory leak here by including the context - Fix this at some point
+    private static volatile Repository INSTANCE;
+
+    //Thread pool for execution on other threads
+    private AppExecutors mAppExecutors;
+    //Context for calling Provider
+    private Context mContext;
+
+    /**
+     * private constructor - prevent direct instantiation
+     * @param appExecutors - thread pool
+     * @param context
+     */
+    private Repository(@NonNull AppExecutors appExecutors, @NonNull Context context){
+        mAppExecutors = appExecutors;
+        mContext = context;
+    }
+
+    /**
+     * public constructor - prevent creation of instance if one already exists
+     * @param appExecutors
+     * @param context
+     * @return
+     */
+    public static Repository getInstance(@NonNull AppExecutors appExecutors, @NonNull Context context){
+        if(INSTANCE == null){
+            synchronized (Repository.class){
+                if(INSTANCE == null){
+                    INSTANCE = new Repository(appExecutors, context);
+                }
+            }
+        }
+        return INSTANCE;
+    }
+
+    /**
+     * getItems runs query in a separate thread, and on success loads data from cursor into a list
+     * @param callback
+     */
+    @Override
+    public void getItems(@NonNull final LoadItemsCallback callback) {
+        Log.d("REPOSITORY","Loading...");
+        Runnable runnable = new Runnable(){
+            @Override
+            public void run() {
+                String[] projection = {
+                        Item.ITEM_ID,
+                        Item.ITEM_TITLE}; /*,
+                        ToDoItem.TODOITEM_CONTENT,
+                        ToDoItem.TODOITEM_DUEDATE,
+                        ToDoItem.TODOITEM_COMPLETED}; */
+                final Cursor c = mContext.getContentResolver().query(Uri.parse("content://" + Provider.AUTHORITY + "/" + Provider.ITEM_TABLE_NAME), projection, null, null, null);
+                final List<Item> Items = new ArrayList<Item>(0);
+                mAppExecutors.mainThread().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(c == null){
+                            callback.onDataNotAvailable();
+                        } else{
+                            while(c.moveToNext()) {
+                                Item item = new Item();
+                                item.setId(c.getInt(c.getColumnIndex(Item.ITEM_ID)));
+                                item.setTitle(c.getString(c.getColumnIndex(Item.ITEM_TITLE))); /*
+                                item.setContent(c.getString(c.getColumnIndex(ToDoItem.TODOITEM_CONTENT)));
+                                item.setDueDate(c.getLong(c.getColumnIndex(ToDoItem.TODOITEM_DUEDATE)));
+                                item.setCompleted(c.getInt(c.getColumnIndex(ToDoItem.TODOITEM_COMPLETED)) > 0); */
+                                Items.add(item);
+                            }
+                            c.close();
+                            callback.onItemsLoaded(Items);
+                        }
+                    }
+                });
+
+            }
+        };
+        mAppExecutors.diskIO().execute(runnable);
+    }
+
+    /**
+     * Not implemented yet
+     * @param ItemId
+     * @param callback
+     */
+    @Override
+    public void getItem(@NonNull String ItemId, @NonNull GetItemCallback callback) {
+        Log.d("REPOSITORY","GetItem");
+    }
+
+    /**
+     * saveItem runs contentProvider update in separate thread
+     * @param Item
+     */
+    @Override
+    public void saveItem(@NonNull final Item Item) {
+        Log.d("REPOSITORY","SaveItem");
+        Runnable runnable = new Runnable(){
+            @Override
+            public void run() {
+                ContentValues myCV = new ContentValues();
+                myCV.put(Item.ITEM_ID, Item.getId());
+                myCV.put(Item.ITEM_TITLE, Item.getTitle()); /*
+                myCV.put(ToDoItem.TODOITEM_CONTENT,toDoItem.getContent());
+                myCV.put(ToDoItem.TODOITEM_DUEDATE,toDoItem.getDueDate());
+                myCV.put(ToDoItem.TODOITEM_COMPLETED,toDoItem.getCompleted()); */
+                final int numUpdated = mContext.getContentResolver().update(Uri.parse("content://" + Provider.AUTHORITY + "/" + Provider.ITEM_TABLE_NAME), myCV,null,null);
+                Log.d("REPOSITORY","Update Item updated " + String.valueOf(numUpdated) + " rows");
+            }
+        };
+        mAppExecutors.diskIO().execute(runnable);
+
+    }
+
+    /**
+     * createItem runs contentProvider insert in separate thread
+     * @param Item
+     */
+    @Override
+    public void createItem(@NonNull final Item Item) {
+        Log.d("REPOSITORY","CreateItem");
+        Runnable runnable = new Runnable(){
+            @Override
+            public void run() {
+                ContentValues myCV = new ContentValues();
+                myCV.put(Item.ITEM_TITLE, Item.getTitle()); /*
+                myCV.put(ToDoItem.TODOITEM_CONTENT,toDoItem.getContent());
+                myCV.put(ToDoItem.TODOITEM_DUEDATE,toDoItem.getDueDate());
+                myCV.put(ToDoItem.TODOITEM_COMPLETED,toDoItem.getCompleted()); */
+                final Uri uri = mContext.getContentResolver().insert(Uri.parse("content://" + Provider.AUTHORITY + "/" + Provider.ITEM_TABLE_NAME), myCV);
+                Log.d("REPOSITORY","Create Item finished with URI" + uri.toString());
+            }
+        };
+        mAppExecutors.diskIO().execute(runnable);
+
+    }
+}

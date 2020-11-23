@@ -1,19 +1,15 @@
 package com.csce4623.bbqbuddy.mainactivity;
 
-import android.app.Activity;
 import android.util.Log;
+
 import androidx.annotation.NonNull;
 
+import com.csce4623.bbqbuddy.data.DataSource;
+import com.csce4623.bbqbuddy.data.Item;
 import com.csce4623.bbqbuddy.data.Repository;
 
 import java.util.List;
-import com.csce4623.bbqbuddy.data.Item;
-import com.csce4623.bbqbuddy.data.Repository;
-import com.csce4623.bbqbuddy.data.DataSource;
 
-/**
- * ToDoListPresenter -- Implements the Presenter interface from ToDoListContract Presenter
- */
 public class MainPresenter implements MainContract.Presenter {
 
     //Data repository instance

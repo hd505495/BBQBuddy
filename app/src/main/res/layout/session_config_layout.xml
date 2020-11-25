@@ -96,7 +96,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/LLFollowRecipeBar"
-        app:layout_constraintBottom_toTopOf="@id/btnStartSession">
+        app:layout_constraintBottom_toTopOf="@id/LLBluetoothSetupBar">
 
         <TextView
             android:id="@+id/TVSetTimerClickable"
@@ -125,6 +125,46 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/LLBluetoothSetupBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/top_bottom_borders"
+        android:clickable="true"
+        android:focusable="auto"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/LLSetTimerBar"
+        app:layout_constraintBottom_toTopOf="@id/btnStartSession">
+
+        <TextView
+            android:id="@+id/TVBluetoothSetupClickable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16sp"
+            android:layout_marginBottom="16sp"
+            android:layout_weight="2"
+            android:paddingStart="24sp"
+            android:paddingTop="16sp"
+            android:paddingBottom="16sp"
+            android:text=" Connect Bluetooth Device"
+            android:textAlignment="center"
+            android:textSize="24sp" />
+
+        <ImageButton
+            android:id="@+id/arrowImageButton4"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16sp"
+            android:layout_marginBottom="16sp"
+            android:layout_weight="1"
+            android:background="#ffffff"
+            app:srcCompat="@drawable/ic_baseline_arrow_forward_ios_24" />
+
+
+    </LinearLayout>
+
     <Button
         android:id="@+id/btnStartSession"
         android:layout_width="match_parent"
@@ -136,6 +176,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/LLSetTimerBar" />
+        app:layout_constraintTop_toBottomOf="@id/LLBluetoothSetupBar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

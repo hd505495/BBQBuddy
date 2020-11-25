@@ -3,7 +3,6 @@ package com.csce4623.bbqbuddy.grillsessionactivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,17 +16,17 @@ public class GrillSessionActivity extends AppCompatActivity implements GrillSess
 
     private GrillSessionContract.Presenter mPresenter;
 
-    LinearLayout LLMeatSelect, LLFollowRecipe, LLSetTimer;
+    LinearLayout LLMeatSelect, LLFollowRecipe, LLSetTimer, LLBluetoothSetup;
     Button btnStartSession;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.session_config_layout);
-        ImageView recipeImage = (ImageView) findViewById(R.id.imageView);
         LLMeatSelect = (LinearLayout) findViewById(R.id.LLMeatSelectBar);
         LLFollowRecipe = (LinearLayout) findViewById(R.id.LLFollowRecipeBar);
         LLSetTimer = (LinearLayout) findViewById(R.id.LLSetTimerBar);
+        LLBluetoothSetup = (LinearLayout) findViewById(R.id.LLBluetoothSetupBar);
         btnStartSession = (Button) findViewById(R.id.btnStartSession);
 
         mPresenter = new GrillSessionPresenter(Repository.getInstance(new AppExecutors(),getApplicationContext()), this);
@@ -50,6 +49,13 @@ public class GrillSessionActivity extends AppCompatActivity implements GrillSess
             @Override
             public void onClick(View view) {
                 // go to activity/fragment for setting timer(s)
+            }
+        });
+
+        LLBluetoothSetup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // go to activity/fragment for configuring bluetooth connection to temp probe
             }
         });
 

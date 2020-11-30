@@ -14,6 +14,27 @@
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
 
+    <string name="title_dummy_text">Honey Cornbread</string>
+    <string name="nutrition_dummy_text">Per Serving:
+358 calories; protein 5.1g 10% DV; carbohydrates 41.8g 14% DV; fat 19.5g 30% DV; cholesterol 87.3mg 29% DV; sodium 156.6mg 6% DV.</string>
+    <string name="ingredients_dummy_text">1 cup all-purpose flour
+1 cup yellow cornmeal
+¼ cup white sugar
+1 tablespoon baking powder
+1 cup heavy cream
+¼ cup vegetable oil
+¼ cup honey
+2 eggs, lightly beaten</string>
+    <string name="instructions_dummy_text">Step 1
+Preheat oven to 400 degrees F (200 degrees C). Lightly grease a 9x9 inch baking pan.
+
+Step 2
+In a large bowl, stir together flour, cornmeal, sugar and baking powder. Make a well in the center of the dry ingredients. Add the cream, oil, honey and eggs; stir to combine. Pour batter into prepared baking pan.
+
+Step 3
+Bake in preheated oven for 20 to 25 minutes, until a toothpick inserted into center of pan comes out clean.</string>
+
+
     <string name="open">Open</string>
     <string name="close">Close</string>
 </resources>

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/LLMeatSelectBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/top_bottom_borders"
+        android:clickable="true"
+        android:focusable="auto"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/LLFollowRecipeBar">
+
+        <TextView
+            android:id="@+id/TVMeatSelectClickable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16sp"
+            android:layout_marginBottom="16sp"
+            android:layout_weight="2"
+            android:paddingStart="24sp"
+            android:paddingTop="16sp"
+            android:paddingBottom="16sp"
+            android:text=" Select a Meat"
+            android:textAlignment="center"
+            android:textSize="24sp" />
+
+        <ImageButton
+            android:id="@+id/arrowImageButton1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16sp"
+            android:layout_marginBottom="16sp"
+            android:layout_weight="1"
+            android:background="#ffffff"
+            app:srcCompat="@drawable/ic_baseline_arrow_forward_ios_24" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/LLFollowRecipeBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/top_bottom_borders"
+        android:clickable="true"
+        android:focusable="auto"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/LLMeatSelectBar"
+        app:layout_constraintBottom_toTopOf="@id/LLSetTimerBar">
+
+        <TextView
+            android:id="@+id/TVFollowRecipeClickable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16sp"
+            android:layout_marginBottom="16sp"
+            android:layout_weight="2"
+            android:paddingStart="24sp"
+            android:paddingTop="16sp"
+            android:paddingBottom="16sp"
+            android:text=" Follow a Recipe"
+            android:textAlignment="center"
+            android:textSize="24sp" />
+
+        <ImageButton
+            android:id="@+id/arrowImageButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16sp"
+            android:layout_marginBottom="16sp"
+            android:layout_weight="1"
+            android:background="#ffffff"
+            app:srcCompat="@drawable/ic_baseline_arrow_forward_ios_24" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/LLSetTimerBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/top_bottom_borders"
+        android:clickable="true"
+        android:focusable="auto"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/LLFollowRecipeBar"
+        app:layout_constraintBottom_toTopOf="@id/LLBluetoothSetupBar">
+
+        <TextView
+            android:id="@+id/TVSetTimerClickable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16sp"
+            android:layout_marginBottom="16sp"
+            android:layout_weight="2"
+            android:paddingStart="24sp"
+            android:paddingTop="16sp"
+            android:paddingBottom="16sp"
+            android:text=" Set Timers"
+            android:textAlignment="center"
+            android:textSize="24sp" />
+
+        <ImageButton
+            android:id="@+id/arrowImageButton3"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16sp"
+            android:layout_marginBottom="16sp"
+            android:layout_weight="1"
+            android:background="#ffffff"
+            app:srcCompat="@drawable/ic_baseline_arrow_forward_ios_24" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/LLBluetoothSetupBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/top_bottom_borders"
+        android:clickable="true"
+        android:focusable="auto"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/LLSetTimerBar"
+        app:layout_constraintBottom_toTopOf="@id/btnStartSession">
+
+        <TextView
+            android:id="@+id/TVBluetoothSetupClickable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16sp"
+            android:layout_marginBottom="16sp"
+            android:layout_weight="2"
+            android:paddingStart="24sp"
+            android:paddingTop="16sp"
+            android:paddingBottom="16sp"
+            android:text=" Connect Bluetooth Device"
+            android:textAlignment="center"
+            android:textSize="24sp" />
+
+        <ImageButton
+            android:id="@+id/arrowImageButton4"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16sp"
+            android:layout_marginBottom="16sp"
+            android:layout_weight="1"
+            android:background="#ffffff"
+            app:srcCompat="@drawable/ic_baseline_arrow_forward_ios_24" />
+
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnStartSession"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="24dp"
+        android:paddingBottom="24dp"
+        android:text="Start Grill Session"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/LLBluetoothSetupBar" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

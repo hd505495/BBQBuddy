@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/start_grill_session"
+        android:icon="@drawable/ic_sharp_outdoor_grill_24"
+        android:title="Start Grill Session" />
+
+    <item android:id="@+id/previous_grill_sessions"
+        android:icon="@drawable/ic_sharp_timer_24"
+        android:title="Previous Grill Sessions" />
+
+    <item android:id="@+id/feedback"
+    android:icon="@drawable/ic_sharp_feedback_24"
+        android:title="Feedback" />
+
+    <item android:id="@+id/settings"
+        android:icon="@drawable/ic_sharp_settings_24"
+        android:title="Settings" />
+
+</menu>

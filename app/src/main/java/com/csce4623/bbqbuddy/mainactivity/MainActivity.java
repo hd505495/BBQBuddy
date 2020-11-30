@@ -1,13 +1,21 @@
 package com.csce4623.bbqbuddy.mainactivity;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.csce4623.bbqbuddy.R;
 import com.csce4623.bbqbuddy.data.Item;
@@ -25,10 +33,37 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     // Inner class instance for ListView adapter
     private MainActivity.ItemsAdapter mItemsAdapter;
 
+    SearchView searchView;
+
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle drawerToggle;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Create toolbar
+        Toolbar toolbar = findViewById(R.id.app_bar);
+
+        // Set toolbar title color
+        toolbar.setTitleTextColor(Color.parseColor("#ffffff"));
+
+        setSupportActionBar(toolbar);
+
+        // Create navigation drawer
+        drawerLayout = findViewById(R.id.drawer_layout);
+        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
+
+        // Set navigation drawer button and arrow color
+        drawerToggle.getDrawerArrowDrawable().setColor(Color.parseColor("#ffffff"));
+
+        drawerLayout.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //Get an instance of the MainPresenter
         //Parameters - Repository - Instance of the Repository
@@ -41,6 +76,25 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         ListView listView = (ListView) findViewById(R.id.*****);
         listView.setAdapter(mToDoItemsAdapter);
          */
+    }
+
+    // Method that implements action bar navigation drawer icon when clicked on
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        if(drawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    // Method for setting menu items in our toolbar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.search_view, menu);
+        MenuItem menuItem = menu.findItem(R.id.searchIcon);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override

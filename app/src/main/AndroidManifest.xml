@@ -9,7 +9,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat">
-        <activity android:name=".NewTimerActivity"></activity>
+        <receiver
+            android:name=".AlarmReceiver"
+            android:enabled="true"
+            android:exported="true">
+
+        </receiver>
+        <activity android:name=".settimersactivity.NewTimerActivity">
+
+        </activity>
         <activity
             android:name=".settimersactivity.SetTimersActivity"
             android:label="@string/title_activity_set_timers"

@@ -1,6 +1,10 @@
 package com.csce4623.bbqbuddy.settimersactivity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,12 +17,13 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.csce4623.bbqbuddy.NewTimerActivity;
+import com.csce4623.bbqbuddy.AlarmReceiver;
 import com.csce4623.bbqbuddy.R;
 import com.csce4623.bbqbuddy.data.Repository;
 import com.csce4623.bbqbuddy.utils.TimerItem;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import util.AppExecutors;
@@ -100,8 +105,9 @@ public class SetTimersActivity extends AppCompatActivity implements SetTimersCon
             if (data != null) {
                 if (data.hasExtra("timer")) {
                     TimerItem timer = (TimerItem) data.getSerializableExtra("timer");
+                    setAlarms(timer);
                     timersList.add(timer);
-                    Log.d("SetTimersActivity", "added new timer to local list of timers for UI");
+                    Log.d("SetTimersActivity", "new timer: --title: " + timer.getTitle() + " interval: " + timer.getInterval() + " repeats: " + timer.getNumRepeats());
                     showTimerItems();
                 }
             }
@@ -109,6 +115,27 @@ public class SetTimersActivity extends AppCompatActivity implements SetTimersCon
             // do nothing
         }
 
+    }
+
+    private void setAlarms(TimerItem timer) {
+        AlarmManager alarmManager;
+        if(Build.VERSION.SDK_INT >= 23) {
+            alarmManager = getSystemService(AlarmManager.class);
+        } else {
+            alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        }
+
+        for (int i = 0; i < timer.getNumRepeats(); i++) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.MINUTE, (calendar.get(Calendar.MINUTE) + (timer.getInterval() * (i+1))));
+            Log.d("SetTimersAc-setAlarms()", "calendar time at set:" + calendar.getTime());
+
+            Intent alarmNotificationIntent = new Intent(this, AlarmReceiver.class);
+            alarmNotificationIntent.putExtra("Title", timer.getTitle());
+            PendingIntent alarmIntent = PendingIntent.getBroadcast(this, i, alarmNotificationIntent, 0);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
+            //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), timer.getInterval() * 60 * 1000, alarmIntent);
+        }
     }
 
 

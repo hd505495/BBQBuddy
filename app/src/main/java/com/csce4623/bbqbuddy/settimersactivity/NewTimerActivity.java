@@ -1,4 +1,4 @@
-package com.csce4623.bbqbuddy;
+package com.csce4623.bbqbuddy.settimersactivity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.csce4623.bbqbuddy.R;
 import com.csce4623.bbqbuddy.utils.TimerItem;
 
 public class NewTimerActivity extends AppCompatActivity {

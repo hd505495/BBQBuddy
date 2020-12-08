@@ -1,10 +1,6 @@
-package com.csce4623.bbqbuddy.settimersactivity;
+package com.csce4623.bbqbuddy.activesessionactivity;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,82 +8,96 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.csce4623.bbqbuddy.AlarmReceiver;
 import com.csce4623.bbqbuddy.R;
 import com.csce4623.bbqbuddy.data.Repository;
 import com.csce4623.bbqbuddy.utils.TimerItem;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import util.AppExecutors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class SetTimersActivity extends AppCompatActivity implements SetTimersContract.View{
+public class ActiveSessionActivity extends AppCompatActivity implements ActiveSessionContract.View{
 
     // Presenter instance for view
-    private SetTimersContract.Presenter mPresenter;
+    private ActiveSessionContract.Presenter mPresenter;
     // Inner class instance for ListView adapter
-    private TimerItemsAdapter mTimerItemsAdapter;
+    private ActiveSessionActivity.TimerItemsAdapter mTimerItemsAdapter;
 
-    private List<TimerItem> timersList;
+    private List<TimerItem> timersList = new ArrayList<TimerItem>();
 
-    private static final int NEW_TIMER_REQUEST = 1;
+    private String meat;
 
     ListView listView;
-    Button btnAddTimer;
-
+    Button btnEndSession;
+    ImageView IVMeatDisplay;
+    TextView TVMeatTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_set_timers);
+        setContentView(R.layout.activity_active_session);
 
-        assert getSupportActionBar() != null;   //null check
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Set Timers");
+        mTimerItemsAdapter = new ActiveSessionActivity.TimerItemsAdapter(new ArrayList<TimerItem>(0), mTimerItemsListener);
 
-        mTimerItemsAdapter = new TimerItemsAdapter(new ArrayList<TimerItem>(0), mTimerItemsListener);
-
-        btnAddTimer = (Button) findViewById(R.id.btnAddTimer);
-        btnAddTimer.setOnClickListener(new View.OnClickListener() {
+        IVMeatDisplay = (ImageView) findViewById(R.id.IVMeat);
+        TVMeatTitle = (TextView) findViewById(R.id.TVMeatTitleClickable);
+        btnEndSession = (Button) findViewById(R.id.btnEndSession);
+        btnEndSession.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                newTimer(NEW_TIMER_REQUEST);
+                // --
             }
         });
 
+        // *** TODO: REMINDER LIST DOESN'T SHOW UP
         // Set up timers list view
-        listView = (ListView) findViewById(R.id.LVTimersList);
+        listView = (ListView) findViewById(R.id.LVSessionTimersList);
         listView.setAdapter(mTimerItemsAdapter);
 
-        TimerItem tempTimer = new TimerItem();
-        tempTimer.setTitle("Baste");
-        tempTimer.setInterval(30);
-        tempTimer.setNumRepeats(6);
+        Intent callingIntent = getIntent();
+        if (callingIntent != null) {
+            if (callingIntent.hasExtra("timerList")) {
+                timersList = (List<TimerItem>) callingIntent.getSerializableExtra("timerList");
+                showTimerItems();
+            }
+            if (callingIntent.hasExtra("meat")){
+                meat = (String) callingIntent.getStringExtra("meat");
+                setMeatDisplay();
+            }
+        }
 
-        timersList = new ArrayList<TimerItem>();
-        timersList.add(tempTimer);
-
-        mPresenter = new SetTimersPresenter(Repository.getInstance(new AppExecutors(),getApplicationContext()), this);
+        mPresenter = new ActiveSessionPresenter(Repository.getInstance(new AppExecutors(),getApplicationContext()), this);
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        Intent dataIntent = new Intent();
-        dataIntent.putExtra("timerList", (Serializable) timersList);
-        setResult(RESULT_OK, dataIntent);
-        finish();
-        return true;
+    private void setMeatDisplay() {
+        TVMeatTitle.setText(meat);
+        if (meat == "chicken") {
+            int imageResource = getResources().getIdentifier("drawable/chicken_stock_img", null, this.getPackageName());
+            IVMeatDisplay.setImageResource(imageResource);
+        }
+        else if (meat == "beef") {
+            int imageResource = getResources().getIdentifier("drawable/beef_stock_img", null, this.getPackageName());
+            IVMeatDisplay.setImageResource(imageResource);
+        }
+        else if (meat == "fish") {
+            int imageResource = getResources().getIdentifier("drawable/fish_stock_img", null, this.getPackageName());
+            IVMeatDisplay.setImageResource(imageResource);
+        }
+        else if (meat == "pork") {
+            int imageResource = getResources().getIdentifier("drawable/pork_stock_img", null, this.getPackageName());
+            IVMeatDisplay.setImageResource(imageResource);
+        }
     }
+
 
     @Override
     public void onResume(){
@@ -96,62 +106,9 @@ public class SetTimersActivity extends AppCompatActivity implements SetTimersCon
     }
 
     @Override
-    public void setPresenter(SetTimersContract.Presenter presenter) {
+    public void setPresenter(ActiveSessionContract.Presenter presenter) {
         mPresenter = presenter;
     }
-
-    private void newTimer(int requestCode) {
-        Intent setTimerIntent = new Intent(this, NewTimerActivity.class);
-        startActivityForResult(setTimerIntent, requestCode);
-    }
-
-    /**
-     * callback function for startActivityForResult
-     * Data intent should contain a date and time
-     * @param requestCode -
-     * @param resultCode -
-     * @param data -
-     */
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            Log.d("SetTimersActivity", "returned from NewTimerActivity");
-            if (data != null) {
-                if (data.hasExtra("timer")) {
-                    TimerItem timer = (TimerItem) data.getSerializableExtra("timer");
-                    setAlarms(timer);
-                    timersList.add(timer);
-                    Log.d("SetTimersActivity", "new timer: --title: " + timer.getTitle() + " interval: " + timer.getInterval() + " repeats: " + timer.getNumRepeats());
-                    showTimerItems();
-                }
-            }
-        } else if (resultCode == RESULT_CANCELED) {
-            // do nothing
-        }
-
-    }
-
-    private void setAlarms(TimerItem timer) {
-        AlarmManager alarmManager;
-        if(Build.VERSION.SDK_INT >= 23) {
-            alarmManager = getSystemService(AlarmManager.class);
-        } else {
-            alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        }
-
-        for (int i = 0; i < timer.getNumRepeats(); i++) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.MINUTE, (calendar.get(Calendar.MINUTE) + (timer.getInterval() * (i+1))));
-            Log.d("SetTimersAc-setAlarms()", "calendar time at set:" + calendar.getTime());
-
-            Intent alarmNotificationIntent = new Intent(this, AlarmReceiver.class);
-            alarmNotificationIntent.putExtra("Title", timer.getTitle());
-            PendingIntent alarmIntent = PendingIntent.getBroadcast(this, i, alarmNotificationIntent, 0);
-            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
-            //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), timer.getInterval() * 60 * 1000, alarmIntent);
-        }
-    }
-
 
     @Override
     public void showTimerItems() {
@@ -163,7 +120,7 @@ public class SetTimersActivity extends AppCompatActivity implements SetTimersCon
     /**
      * instance of TimerItemsListener with onTimerItemClick function
      */
-    TimerItemsListener mTimerItemsListener = new TimerItemsListener() {
+    ActiveSessionActivity.TimerItemsListener mTimerItemsListener = new ActiveSessionActivity.TimerItemsListener() {
         @Override
         public void onTimerItemClick(TimerItem clickedTimerItem) {
 ////////////////////////////// TODO: timer item click listener
@@ -178,14 +135,14 @@ public class SetTimersActivity extends AppCompatActivity implements SetTimersCon
         //List of all TimerItems
         private List<TimerItem> mTimerItems;
         // Listener for onItemClick events
-        private TimerItemsListener mItemListener;
+        private ActiveSessionActivity.TimerItemsListener mItemListener;
 
         /**
          * Constructor for the adapter
          * @param timerItems - List of initial items
          * @param itemListener - onItemClick listener
          */
-        public TimerItemsAdapter(List<TimerItem> timerItems, TimerItemsListener itemListener) {
+        public TimerItemsAdapter(List<TimerItem> timerItems, ActiveSessionActivity.TimerItemsListener itemListener) {
             setList(timerItems);
             mItemListener = itemListener;
         }
@@ -196,6 +153,7 @@ public class SetTimersActivity extends AppCompatActivity implements SetTimersCon
          */
         public void replaceData(List<TimerItem> timerItems) {
             setList(timerItems);
+            Log.d("ActiveSessionActivity", "loading listview with timerItems list in replaceData in adapter");
             notifyDataSetChanged();
         }
 

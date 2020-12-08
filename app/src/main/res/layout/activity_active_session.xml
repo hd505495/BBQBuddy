@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activesessionactivity.ActiveSessionActivity">
+
+
+    <LinearLayout
+        android:id="@+id/LLMeatDisplayBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/top_bottom_borders"
+        android:clickable="true"
+        android:focusable="auto"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/TVMeatTitleClickable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16sp"
+            android:layout_marginBottom="16sp"
+            android:layout_weight="8"
+            android:paddingStart="24sp"
+            android:paddingTop="16sp"
+            android:paddingBottom="16sp"
+            android:text=" Meat"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="24sp" />
+
+        <ImageView
+            android:id="@+id/IVMeat"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16sp"
+            android:layout_marginBottom="16sp"
+            android:layout_weight="1"
+            android:background="#FFFFFF"
+            app:srcCompat="@drawable/chicken_stock_img" />
+
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/LVSessionTimersList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8sp"
+        android:layout_marginBottom="8sp"
+        android:background="#323232"
+        app:layout_constraintBottom_toTopOf="@id/LLTempGraphBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/LLMeatDisplayBar" />
+
+    <LinearLayout
+        android:id="@+id/LLTempGraphBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/top_bottom_borders"
+        android:clickable="true"
+        android:focusable="auto"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/btnEndSession"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:id="@+id/LLTempGraphBarInfo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_weight="2"
+            android:background="@drawable/top_bottom_borders"
+            android:clickable="true"
+            android:focusable="auto"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/TVTempGraphClickable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8sp"
+                android:layout_marginBottom="8sp"
+                android:paddingStart="32sp"
+                android:paddingTop="8sp"
+                android:text=" Temperature Graph"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/TVTempGraphInfoClickable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8sp"
+                android:paddingStart="32sp"
+                android:text=" Bluetooth Device Required"
+                android:textAlignment="center"
+                android:textColor="#B2000000"
+                android:textSize="11sp" />
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/arrowImageButton1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="8sp"
+            android:layout_marginBottom="8sp"
+            android:layout_weight="1"
+            android:background="#FFFFFF"
+            android:tint="#000000"
+            android:visibility="visible"
+            app:srcCompat="@drawable/ic_baseline_arrow_forward_ios_24" />
+
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnEndSession"
+        android:layout_width="333dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/colorPrimary"
+        android:text="End Session"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

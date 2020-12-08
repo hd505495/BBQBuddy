@@ -9,24 +9,27 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat">
+        <activity android:name=".activesessionactivity.ActiveSessionActivity">
+
+        </activity>
+
         <receiver
             android:name=".AlarmReceiver"
             android:enabled="true"
-            android:exported="true">
+            android:exported="true"></receiver>
 
-        </receiver>
-        <activity android:name=".settimersactivity.NewTimerActivity">
-
-        </activity>
+        <activity android:name=".settimersactivity.NewTimerActivity"></activity>
         <activity
             android:name=".settimersactivity.SetTimersActivity"
-            android:label="@string/title_activity_set_timers"
-            android:theme="@style/NoActionBar" >
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+            android:label="@string/title_activity_set_timers">
 
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+        </activity>
+        <activity android:name=".grillsessionactivity.GrillSessionActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name=".MeatSelectActivity" />
 
@@ -36,9 +39,7 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".mainactivity.MainActivity">
-
-        </activity>
+        <activity android:name=".mainactivity.MainActivity"></activity>
     </application>
 
 </manifest>

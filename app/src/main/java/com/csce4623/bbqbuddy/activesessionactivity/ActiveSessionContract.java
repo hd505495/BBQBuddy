@@ -1,5 +1,7 @@
 package com.csce4623.bbqbuddy.activesessionactivity;
 
+import com.csce4623.bbqbuddy.data.Session;
+
 public interface ActiveSessionContract {
 
     interface View{
@@ -13,6 +15,8 @@ public interface ActiveSessionContract {
          * showTimerItems - takes a list of timerItems and populates a ListView
          */
         void showTimerItems();
+
+        void saveSession();
     }
 
     interface Presenter{
@@ -23,6 +27,8 @@ public interface ActiveSessionContract {
          * Ideally, should be coupled with a stop if any running tasks need to be destroyed.
          */
         void start();
+
+        void saveSessionToDB(Session session);
 
     }
 

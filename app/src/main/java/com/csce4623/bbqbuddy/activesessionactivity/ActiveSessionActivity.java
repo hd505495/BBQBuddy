@@ -16,9 +16,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.csce4623.bbqbuddy.R;
 import com.csce4623.bbqbuddy.data.Repository;
+import com.csce4623.bbqbuddy.data.Session;
 import com.csce4623.bbqbuddy.utils.TimerItem;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import util.AppExecutors;
@@ -81,7 +83,28 @@ public class ActiveSessionActivity extends AppCompatActivity implements ActiveSe
             }
         }
 
+        btnEndSession.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveSession();
+            }
+        });
+
         mPresenter = new ActiveSessionPresenter(Repository.getInstance(new AppExecutors(),getApplicationContext()), this);
+    }
+
+    public void saveSession() {
+        Calendar calendar = Calendar.getInstance();
+
+        Session session = new Session();
+        session.setMeat(meat);
+        session.setDate(calendar.getTimeInMillis());
+
+     /*   Intent intent = new Intent();
+        intent.putExtra("session", session);
+        setResult(RESULT_OK, intent); */
+        mPresenter.saveSessionToDB(session);
+        finish();
     }
 
     private void setMeatDisplay() {

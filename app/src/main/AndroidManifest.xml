@@ -32,12 +32,6 @@
 
         <activity android:name=".MeatSelectActivity" />
 
-        <provider
-            android:name=".data.Provider"
-            android:authorities="com.hwdykes.bbqbuddy.data"
-            android:enabled="true"
-            android:exported="true" />
-
         <activity android:name=".mainactivity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

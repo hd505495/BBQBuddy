@@ -27,10 +27,15 @@ public class RecipeActivity extends AppCompatActivity implements RecipeContract.
     ArrayList<String> recipeIngredientsName = new ArrayList<>();
     ArrayList<String> recipeIngredientsAmountValue = new ArrayList<>();
     ArrayList<String> recipeIngredientsAmountUnit = new ArrayList<>();
+    ArrayList<String> recipeNutritionTitles = new ArrayList<>();
+    ArrayList<String> recipeNutritionValues = new ArrayList<>();
+    ArrayList<String> recipeInstructionsSteps = new ArrayList<>();
     Integer position;
 
     TextView tvRecipeTitle;
     TextView tvIngredients;
+    TextView tvNutrition;
+    TextView tvInstructions;
     ImageView recipeImage;
 
     @Override
@@ -43,6 +48,8 @@ public class RecipeActivity extends AppCompatActivity implements RecipeContract.
         getSupportActionBar().setTitle("Recipe");
         recipeImage = (ImageView) findViewById(R.id.imageView);
         tvRecipeTitle = (TextView) findViewById(R.id.tvRecipeTitle);
+        tvNutrition = (TextView) findViewById(R.id.tvNutrition);
+        tvInstructions = (TextView) findViewById(R.id.tvInstructions);
 
         mPresenter = new RecipePresenter(Repository.getInstance(new AppExecutors(),getApplicationContext()), this);
 
@@ -55,6 +62,9 @@ public class RecipeActivity extends AppCompatActivity implements RecipeContract.
         recipeIngredientsName = (ArrayList<String>) getIntent().getSerializableExtra("ingredientsName");
         recipeIngredientsAmountValue = (ArrayList<String>) getIntent().getSerializableExtra("ingredientsAmountValue");
         recipeIngredientsAmountUnit = (ArrayList<String>) getIntent().getSerializableExtra("ingredientsAmountUnit");
+        recipeNutritionTitles = (ArrayList<String>) getIntent().getSerializableExtra("nutritionTitles");
+        recipeNutritionValues = (ArrayList<String>) getIntent().getSerializableExtra("nutritionValues");
+        recipeInstructionsSteps = (ArrayList<String>) getIntent().getSerializableExtra("instructionsSteps");
 
         // Position variable used to determine which recipe was clicked on
         position = (Integer) getIntent().getIntExtra("position", 0);
@@ -71,13 +81,28 @@ public class RecipeActivity extends AppCompatActivity implements RecipeContract.
         String ingredientInfo = "";
 
         for(int i = 0; i < recipeIngredientsName.size(); i++) {
-            ingredientInfo = ingredientInfo + recipeIngredientsAmountValue.get(i) + recipeIngredientsAmountUnit.get(i) + " " + recipeIngredientsName.get(i) + ", ";
+            ingredientInfo = ingredientInfo + recipeIngredientsAmountValue.get(i) + recipeIngredientsAmountUnit.get(i) + " " + recipeIngredientsName.get(i) + ",  ";
         }
 
         Log.d("IngredientInfo", ingredientInfo);
 
         tvIngredients.setText(ingredientInfo);
         tvRecipeTitle.setText(recipeTitle.get(position));
+        String nutritionText = "Per Serving: ";
+        for (int i = 0; i < recipeNutritionTitles.size(); i++) {
+            nutritionText += recipeNutritionTitles.get(i);
+            nutritionText += ": ";
+            nutritionText += recipeNutritionValues.get(i);
+            nutritionText += "; ";
+        }
+        tvNutrition.setText(nutritionText);
+
+        String instructionText = "";
+        for (int i = 0; i < recipeInstructionsSteps.size(); i++) {
+            int stepNumber = i + 1;
+            instructionText += Integer.toString(stepNumber) + ") " + recipeInstructionsSteps.get(i) + " \n";
+        }
+        tvInstructions.setText(instructionText);
     }
 
     @Override

@@ -5,12 +5,9 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,7 +22,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.csce4623.bbqbuddy.R;
-import com.csce4623.bbqbuddy.data.Item;
 import com.csce4623.bbqbuddy.data.Repository;
 import com.csce4623.bbqbuddy.grillsessionactivity.GrillSessionActivity;
 import com.csce4623.bbqbuddy.recipeactivity.RecipeActivity;
@@ -43,18 +39,15 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import util.AppExecutors;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 public class MainActivity extends AppCompatActivity implements MainContract.View, RecyclerViewAdapter.ItemClickListener {
 
     private MainContract.Presenter mPresenter;
     // Inner class instance for ListView adapter
-    private MainActivity.ItemsAdapter mItemsAdapter;
+    //private MainActivity.ItemsAdapter mItemsAdapter;
 
     SearchView searchView;
 
@@ -66,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
     ArrayList<String> recipeID = new ArrayList<>();
     ArrayList<String> recipeTitle = new ArrayList<>();
+    ArrayList<String> recipeImageURL = new ArrayList<>();
     ArrayList<String> recipeIngredientsName = new ArrayList<>();
     ArrayList<String> recipeIngredientsAmountValue = new ArrayList<>();
     ArrayList<String> recipeIngredientsAmountUnit = new ArrayList<>();
@@ -139,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         // Local variables to hold id and title
         String id = null;
         String title = null;
+        String imageURL = null;
 
         try {
             // Get recipe id and title from URL
@@ -155,18 +150,20 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
                 id = jsonRecipeDataArray.getJSONObject(i).getString("id");
                 title = jsonRecipeDataArray.getJSONObject(i).getString("title");
+                imageURL = jsonRecipeDataArray.getJSONObject(i).getString("image");
 
                 Log.d("id", id);
                 Log.d("title", title);
 
                 recipeID.add(id);
                 recipeTitle.add(title);
+                recipeImageURL.add(imageURL);
             }
 
             // Configure the recycler view and set the adapter
             RecyclerView recyclerView = findViewById(R.id.recyclerView);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
-            rvAdapter = new RecyclerViewAdapter(this, recipeTitle);
+            rvAdapter = new RecyclerViewAdapter(this, recipeTitle, recipeImageURL);
             rvAdapter.setClickListener(this);
             recyclerView.setAdapter(rvAdapter);
 
@@ -251,6 +248,20 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         mPresenter.start();
     }
 
+    @Override
+    public void onItemClick(View view, int position) {
+        Toast.makeText(this, "You clicked " + rvAdapter.getItem(position) + " on row number " + position, Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(MainActivity.this, RecipeActivity.class);
+        intent.putExtra("imageURL", recipeImageURL);
+        intent.putExtra("recipeTitle", recipeTitle);
+        intent.putExtra("ingredientsName", recipeIngredientsName);
+        intent.putExtra("ingredientsAmountValue", recipeIngredientsAmountValue);
+        intent.putExtra("ingredientsAmountUnit", recipeIngredientsAmountUnit);
+        intent.putExtra("position", position);
+        startActivity(intent);
+    }
+
     /**
      * set the presenter for this view
      * @param presenter - the MainContract.presenter instance
@@ -262,131 +273,14 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
     /**
      * Replace the items in the ItemsAdapter
-     * @param ItemList - List of Items
-     */
+     * @param
+
     @Override
     public void showItems(List<Item> ItemList) {
         mItemsAdapter.replaceData(ItemList);
     }
+    */
 
-    /**
-     * instance of ItemsListener with onItemClick function
-     */
-    MainActivity.ItemsListener mItemsListener = new MainActivity.ItemsListener() {
-        @Override
-        public void onItemClick(Item clickedItem) {
-            Log.d("FRAGMENT","Open Item Details");
-                    /* **** REFACTOR FOR RECIPE LIST ITEM CLICK  ****
-            //Grab item from the ListView click and pass to presenter
-            //mPresenter.showExistingToDoItem(clickedToDoItem);
-
-                     */
-        }
-    };
-
-    @Override
-    public void onItemClick(View view, int position) {
-        Toast.makeText(this, "You clicked " + rvAdapter.getItem(position) + " on row number " + position, Toast.LENGTH_SHORT).show();
-
-        Intent intent = new Intent(MainActivity.this, RecipeActivity.class);
-        intent.putExtra("ingredientsName", recipeIngredientsName);
-        intent.putExtra("ingredientsAmountValue", recipeIngredientsAmountValue);
-        intent.putExtra("ingredientsAmountUnit", recipeIngredientsAmountUnit);
-        intent.putExtra("position", position);
-        startActivity(intent);
-    }
-
-    /**
-     * Adapter for ListView to show Items
-     */
-    private static class ItemsAdapter extends BaseAdapter {
-
-        // List of all Items
-        private List<Item> mItems;
-        // Listener for onItemClick events
-        private MainActivity.ItemsListener mItemListener;
-
-        /**
-         * Constructor for the adapter
-         * @param Items - List of initial items
-         * @param itemListener - onItemClick listener
-         */
-        public ItemsAdapter(List<Item> Items, MainActivity.ItemsListener itemListener) {
-            setList(Items);
-            mItemListener = itemListener;
-        }
-
-        /**
-         * replace Items list with new list
-         * @param Items - List of items to use in replacement
-         */
-        public void replaceData(List<Item> Items) {
-            setList(Items);
-            notifyDataSetChanged();
-        }
-
-        private void setList(List<Item> Items) {
-            mItems = checkNotNull(Items);
-        }
-
-        @Override
-        public int getCount() {
-            return mItems.size();
-        }
-
-        @Override
-        public Item getItem(int i) {
-            return mItems.get(i);
-        }
-
-        @Override
-        public long getItemId(int i) {
-            return i;
-        }
-
-        /**
-         * Get a View based on an index and viewgroup and populate
-         * @param i -
-         * @param view -
-         * @param viewGroup -
-         * @return
-         */
-        @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
-            View rowView = view;
-            if (rowView == null) {
-                LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-                rowView = inflater.inflate(R.layout.item_layout, viewGroup, false);
-            }
-
-            //get the Item associated with a given view
-            //used in the OnItemClick callback
-            final Item item = getItem(i);
-
-            /* **** REFACTOR FOR RECIPE ITEMS ****
-
-            TextView titleTV = (TextView) rowView.findViewById(R.id.etItemTitle);
-            titleTV.setText(Item.getTitle());
-
-            TextView contentTV = (TextView) rowView.findViewById(R.id.etItemContent);
-            contentTV.setText(Item.getContent());
-
-             */
-
-            rowView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    //Set onItemClick listener
-                    mItemListener.onItemClick(item);
-                }
-            });
-            return rowView;
-        }
-    }
-
-    public interface ItemsListener {
-        void onItemClick(Item clickedItem);
-    }
 
     // Private class that handles getting Json data from an input URL
     private class JsonTask extends AsyncTask<String, String, String> {

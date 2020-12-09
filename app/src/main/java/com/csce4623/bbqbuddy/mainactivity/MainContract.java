@@ -1,9 +1,5 @@
 package com.csce4623.bbqbuddy.mainactivity;
 
-import java.util.List;
-
-import com.csce4623.bbqbuddy.data.Item;
-
 /**
  * MainContract
  * Two inner interfaces, a View and a Presenter for the MainActivity
@@ -21,7 +17,7 @@ public interface MainContract {
          * showItems - takes a list of Items and populates a ListView
          * @param ItemList - List of Items
          */
-        void showItems(List<Item> ItemList);
+        //void showItems(List<Item> ItemList);
 
     }
 

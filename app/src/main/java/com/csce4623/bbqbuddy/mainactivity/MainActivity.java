@@ -63,6 +63,9 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     ArrayList<String> recipeIngredientsName = new ArrayList<>();
     ArrayList<String> recipeIngredientsAmountValue = new ArrayList<>();
     ArrayList<String> recipeIngredientsAmountUnit = new ArrayList<>();
+    ArrayList<String> recipeNutritionTitles = new ArrayList<>();
+    ArrayList<String> recipeNutritionValues = new ArrayList<>();
+    ArrayList<String> recipeInstructionsSteps = new ArrayList<>();
 
 
     @Override
@@ -118,11 +121,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         // Repository needs the application context to be able to make calls to the ContentProvider
         mPresenter = new MainPresenter(Repository.getInstance(new AppExecutors(),getApplicationContext()), this);
 
-        /* TODO -- SETUP LISTVIEW
-        ListView listView = (ListView) findViewById(R.id.*****);
-        listView.setAdapter(mToDoItemsAdapter);
-         */
-
         ////////////////////
         // Get recipe ID, title, and image URL (not implemented yet)
         ///////////////////
@@ -141,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
             JSONObject jsonRecipeDataObject = new JSONObject(jsonRecipeData);
             JSONArray jsonRecipeDataArray = jsonRecipeDataObject.getJSONArray("results");
 
-            // Logging to check the contents of jsonIngredientDataArray
+            // Logging to check the contents of jsonRecipeDataArray
             Log.d("RecipeArray", jsonRecipeDataArray.toString());
 
             // Loop through acquired JSONArray and grab id and title of each recipe
@@ -209,6 +207,46 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 }
             }
 
+            // Get nutrition info from URL
+            for(int i = 0; i < recipeID.size(); i++) {
+
+                //String jsonNutritionData = new JsonTask().execute("https://api.spoonacular.com/recipes/informationBulk?apiKey=3fe88830eb2a4d98ab736e2da8997404&ids=" + recipeID.get(i)).get();
+                String jsonNutritionData = new JsonTask().execute("https://api.spoonacular.com/recipes/" + recipeID.get(i) + "/nutritionWidget.json?apiKey=3fe88830eb2a4d98ab736e2da8997404").get();
+                JSONObject jsonNutritionDataObject = new JSONObject(jsonNutritionData);
+
+                // Logging to check the contents of jsonIngredientDataArray
+                Log.d("RecipeInfoplusNutString", jsonNutritionDataObject.toString());
+
+                String calories = jsonNutritionDataObject.getString("calories");
+                recipeNutritionTitles.add("calories");
+                recipeNutritionValues.add(calories);
+                String carbs = jsonNutritionDataObject.getString("carbs");
+                recipeNutritionTitles.add("carbs");
+                recipeNutritionValues.add(carbs);
+                String fat = jsonNutritionDataObject.getString("fat");
+                recipeNutritionTitles.add("fat");
+                recipeNutritionValues.add(fat);
+                String protein = jsonNutritionDataObject.getString("protein");
+                recipeNutritionTitles.add("protein");
+                recipeNutritionValues.add(protein);
+
+            }
+
+            for (int i = 0; i < recipeID.size(); i++) {
+                String jsonInstructionData = new JsonTask().execute("https://api.spoonacular.com/recipes/" + recipeID.get(i) + "/analyzedInstructions?apiKey=3fe88830eb2a4d98ab736e2da8997404").get();
+                //JSONObject jsonInstructionsObj = new JSONObject(jsonInstructionData);
+                JSONArray jsonInstructionsArray = new JSONArray(jsonInstructionData);
+
+                Log.d("RecipeInstructionString", jsonInstructionsArray.toString());
+
+                JSONArray tempArray = jsonInstructionsArray.getJSONObject(0).getJSONArray("steps");
+
+                for (int j = 0; j < tempArray.length(); j++) {
+                    recipeInstructionsSteps.add(tempArray.getJSONObject(j).getString("step"));
+                }
+
+            }
+
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -258,6 +296,9 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         intent.putExtra("ingredientsName", recipeIngredientsName);
         intent.putExtra("ingredientsAmountValue", recipeIngredientsAmountValue);
         intent.putExtra("ingredientsAmountUnit", recipeIngredientsAmountUnit);
+        intent.putExtra("nutritionTitles", recipeNutritionTitles);
+        intent.putExtra("nutritionValues", recipeNutritionValues);
+        intent.putExtra("instructionsSteps", recipeInstructionsSteps);
         intent.putExtra("position", position);
         startActivity(intent);
     }

@@ -1,27 +1,35 @@
 package com.csce4623.bbqbuddy.mainactivity;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.csce4623.bbqbuddy.R;
 
+import java.io.InputStream;
 import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
     private List<String> mData;
+    private List<String> mURLS;
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
 
     // Data is passed into the constructor
-    RecyclerViewAdapter(Context context, List<String> data) {
+    RecyclerViewAdapter(Context context, List<String> data, List<String> URL) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
+        this.mURLS = URL;
     }
 
     // Inflates the row layout from xml when needed
@@ -36,6 +44,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(ViewHolder holder, int position) {
         String recipe = mData.get(position);
         holder.myTextView.setText(recipe);
+        String imageURL = mURLS.get(position);
+        if (imageURL != null) {
+            new DownloadImageTask(holder.recipeImage).execute(imageURL);
+        }
     }
 
     // Total number of rows
@@ -48,10 +60,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView myTextView;
+        ImageView recipeImage;
 
         ViewHolder(View itemView) {
             super(itemView);
             myTextView = itemView.findViewById(R.id.tvRecipeTitle);
+            recipeImage = itemView.findViewById(R.id.ivRecyclerRowImage);
             itemView.setOnClickListener(this);
         }
 
@@ -74,5 +88,31 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     // parent activity will implement this method to respond to click events
     public interface ItemClickListener {
         void onItemClick(View view, int position);
+    }
+
+    /**
+     * Downloads web image from URL, loads bitmap into imageview
+     */
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap bmp = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                bmp = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return bmp;
+        }
+        protected void onPostExecute(Bitmap result) {
+            bmImage.setImageBitmap(result);
+        }
     }
 }

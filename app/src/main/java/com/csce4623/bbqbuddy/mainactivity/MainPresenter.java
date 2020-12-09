@@ -48,7 +48,7 @@ public class MainPresenter implements MainContract.Presenter {
             public void onItemsLoaded(List<Item> Items) {
                 Log.d("PRESENTER","Loaded");
 
-                mView.showItems(Items);
+                //mView.showItems(Items);
             }
 
             @Override

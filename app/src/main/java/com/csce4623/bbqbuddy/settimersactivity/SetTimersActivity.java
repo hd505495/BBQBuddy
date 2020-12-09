@@ -22,7 +22,6 @@ import com.csce4623.bbqbuddy.R;
 import com.csce4623.bbqbuddy.data.Repository;
 import com.csce4623.bbqbuddy.utils.TimerItem;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -69,10 +68,10 @@ public class SetTimersActivity extends AppCompatActivity implements SetTimersCon
         listView = (ListView) findViewById(R.id.LVTimersList);
         listView.setAdapter(mTimerItemsAdapter);
 
-        TimerItem tempTimer = new TimerItem();
-        tempTimer.setTitle("Baste");
+        TimerItem tempTimer = new TimerItem("Baste", 30, 6);
+       /* tempTimer.setTitle("Baste");
         tempTimer.setInterval(30);
-        tempTimer.setNumRepeats(6);
+        tempTimer.setNumRepeats(6); */
 
         timersList = new ArrayList<TimerItem>();
         timersList.add(tempTimer);
@@ -83,7 +82,8 @@ public class SetTimersActivity extends AppCompatActivity implements SetTimersCon
     @Override
     public boolean onSupportNavigateUp() {
         Intent dataIntent = new Intent();
-        dataIntent.putExtra("timerList", (Serializable) timersList);
+        dataIntent.putExtra("timersList", (ArrayList<TimerItem>) timersList);
+        Log.d("SetTimersActivity", "timersList in intent to GrillSession has size " + timersList.size());
         setResult(RESULT_OK, dataIntent);
         finish();
         return true;
@@ -118,7 +118,7 @@ public class SetTimersActivity extends AppCompatActivity implements SetTimersCon
             Log.d("SetTimersActivity", "returned from NewTimerActivity");
             if (data != null) {
                 if (data.hasExtra("timer")) {
-                    TimerItem timer = (TimerItem) data.getSerializableExtra("timer");
+                    TimerItem timer = (TimerItem) data.getParcelableExtra("timer");
                     setAlarms(timer);
                     timersList.add(timer);
                     Log.d("SetTimersActivity", "new timer: --title: " + timer.getTitle() + " interval: " + timer.getInterval() + " repeats: " + timer.getNumRepeats());

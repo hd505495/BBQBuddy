@@ -28,8 +28,6 @@ public class NewTimerActivity extends AppCompatActivity {
         etNumRepeats = (EditText) findViewById(R.id.etNumRepeats);
         btnSave = (Button) findViewById(R.id.btnSaveItem);
 
-        timer = new TimerItem();
-
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -44,9 +42,8 @@ public class NewTimerActivity extends AppCompatActivity {
         int numRepeats = Integer.parseInt(etNumRepeats.getText().toString());
 
         if ((!title.equals("")) && (interval > 0) && (numRepeats >= 0)) {
-            timer.setTitle(title);
-            timer.setInterval(interval);
-            timer.setNumRepeats(numRepeats);
+
+            TimerItem timer = new TimerItem(title, interval, numRepeats);
 
             Intent dataIntent = new Intent();
             dataIntent.putExtra("timer", timer);

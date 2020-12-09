@@ -25,11 +25,7 @@
 
         </activity>
         <activity android:name=".grillsessionactivity.GrillSessionActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".MeatSelectActivity" />
 
@@ -39,7 +35,13 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".mainactivity.MainActivity"></activity>
+        <activity android:name=".mainactivity.MainActivity">
+            <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
     </application>
 
 </manifest>

@@ -2,6 +2,7 @@ package com.csce4623.bbqbuddy.grillsessionactivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -15,7 +16,6 @@ import com.csce4623.bbqbuddy.data.Repository;
 import com.csce4623.bbqbuddy.settimersactivity.SetTimersActivity;
 import com.csce4623.bbqbuddy.utils.TimerItem;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,7 +89,8 @@ public class GrillSessionActivity extends AppCompatActivity implements GrillSess
 
     private void launchGrillSession(int requestCode) {
         Intent startSessionIntent = new Intent(this, ActiveSessionActivity.class);
-        startSessionIntent.putExtra("timerList", (Serializable) timersList);
+        startSessionIntent.putExtra("timersList", (ArrayList<TimerItem>) timersList);
+        Log.d("GrillSessionActivity", "timerList put into startSessionIntent has size " + timersList.size());
         startSessionIntent.putExtra("meat", meat);
         startActivityForResult(startSessionIntent, requestCode);
     }
@@ -117,7 +118,12 @@ public class GrillSessionActivity extends AppCompatActivity implements GrillSess
             if (data != null) {
                 if (requestCode == SET_TIMERS_REQUEST) {
                     if (data.hasExtra("timersList")) {
-                        timersList = (List<TimerItem>) data.getSerializableExtra("timersList");
+                        timersList.addAll(data.<TimerItem>getParcelableArrayListExtra("timersList"));
+                        //timersList = data.getParcelableArrayListExtra("timersList");
+                        Log.d("GrillSessionActivity", "timersList in intent from SetTimersActivity has size " + timersList.size());
+                    }
+                    else {
+                        Log.d("GrillSessionActivity", "intent from SetTimersActivity does not contain a timersList");
                     }
                 }
                 else if (requestCode == MEAT_SELECT_REQUEST) {
@@ -125,6 +131,8 @@ public class GrillSessionActivity extends AppCompatActivity implements GrillSess
                         meat = (String) data.getStringExtra("meat");
                     }
                 }
+            } else {
+                Log.d("GrillSessionActivity", "intent from SetTimersActivity is null");
             }
 
         } else if (resultCode == RESULT_CANCELED) {

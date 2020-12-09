@@ -18,16 +18,16 @@
             android:id="@+id/app_bar">
         </include>
 
-        <FrameLayout
-            android:id="@+id/mainFragmentFrame"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-        </FrameLayout>
-        
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/app_bar"
+            app:layout_constraintBottom_toBottomOf="parent">
+        </androidx.recyclerview.widget.RecyclerView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.navigation.NavigationView

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.csce4623.bbqbuddy">
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -9,9 +10,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat">
-        <activity android:name=".activesessionactivity.ActiveSessionActivity">
-
-        </activity>
+        <activity android:name=".activesessionactivity.ActiveSessionActivity"></activity>
 
         <receiver
             android:name=".AlarmReceiver"
@@ -19,14 +18,16 @@
             android:exported="true"></receiver>
 
         <activity android:name=".settimersactivity.NewTimerActivity"></activity>
+      
         <activity
             android:name=".settimersactivity.SetTimersActivity"
             android:label="@string/title_activity_set_timers">
-
         </activity>
-        <activity android:name=".grillsessionactivity.GrillSessionActivity">
+      
+        <activity android:name=".grillsessionactivity.GrillSessionActivity"></activity>
 
-        </activity>
+        <activity android:name=".recipeactivity.RecipeActivity" ></activity>
+
         <activity android:name=".MeatSelectActivity" />
 
         <provider
@@ -36,12 +37,13 @@
             android:exported="true" />
 
         <activity android:name=".mainactivity.MainActivity">
-            <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+                  <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

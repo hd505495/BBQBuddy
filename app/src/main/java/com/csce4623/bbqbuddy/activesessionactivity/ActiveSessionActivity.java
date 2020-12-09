@@ -40,6 +40,7 @@ public class ActiveSessionActivity extends AppCompatActivity implements ActiveSe
     Button btnEndSession;
     ImageView IVMeatDisplay;
     TextView TVMeatTitle;
+    TextView TVMeatTemp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +50,8 @@ public class ActiveSessionActivity extends AppCompatActivity implements ActiveSe
         mTimerItemsAdapter = new ActiveSessionActivity.TimerItemsAdapter(new ArrayList<TimerItem>(0), mTimerItemsListener);
 
         IVMeatDisplay = (ImageView) findViewById(R.id.IVMeat);
-        TVMeatTitle = (TextView) findViewById(R.id.TVMeatTitleClickable);
+        TVMeatTitle = (TextView) findViewById(R.id.TVMeatTitle);
+        TVMeatTemp = (TextView) findViewById(R.id.TVMeatTemp);
         btnEndSession = (Button) findViewById(R.id.btnEndSession);
         btnEndSession.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,22 +85,34 @@ public class ActiveSessionActivity extends AppCompatActivity implements ActiveSe
     }
 
     private void setMeatDisplay() {
-        TVMeatTitle.setText(meat);
+        TVMeatTitle.setText(meat.toUpperCase());
         if (meat.equals("chicken")) {
             int imageResource = getResources().getIdentifier("drawable/chicken_stock_img", null, this.getPackageName());
             IVMeatDisplay.setImageResource(imageResource);
+            String degree = getText(R.string.degree_symbol).toString();
+            String temp = "165" + degree + "F";
+            TVMeatTemp.setText(temp);
         }
         else if (meat.equals("beef")) {
             int imageResource = getResources().getIdentifier("drawable/beef_stock_img", null, this.getPackageName());
             IVMeatDisplay.setImageResource(imageResource);
+            String degree = getText(R.string.degree_symbol).toString();
+            String temp = "145" + degree + "F";
+            TVMeatTemp.setText(temp);
         }
         else if (meat.equals("fish")) {
             int imageResource = getResources().getIdentifier("drawable/fish_stock_img", null, this.getPackageName());
             IVMeatDisplay.setImageResource(imageResource);
+            String degree = getText(R.string.degree_symbol).toString();
+            String temp = "145" + degree + "F";
+            TVMeatTemp.setText(temp);
         }
         else if (meat.equals("pork")) {
             int imageResource = getResources().getIdentifier("drawable/pork_stock_img", null, this.getPackageName());
             IVMeatDisplay.setImageResource(imageResource);
+            String degree = getText(R.string.degree_symbol).toString();
+            String temp = "145" + degree + "F";
+            TVMeatTemp.setText(temp);
         }
     }
 

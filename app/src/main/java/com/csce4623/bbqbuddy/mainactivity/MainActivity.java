@@ -11,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,6 +18,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -27,7 +27,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.csce4623.bbqbuddy.R;
 import com.csce4623.bbqbuddy.data.Item;
 import com.csce4623.bbqbuddy.data.Repository;
+import com.csce4623.bbqbuddy.grillsessionactivity.GrillSessionActivity;
 import com.csce4623.bbqbuddy.recipeactivity.RecipeActivity;
+import com.google.android.material.navigation.NavigationView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -61,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
     RecyclerViewAdapter rvAdapter;
 
+
     ArrayList<String> recipeID = new ArrayList<>();
     ArrayList<String> recipeTitle = new ArrayList<>();
     ArrayList<String> recipeIngredientsName = new ArrayList<>();
@@ -92,6 +95,27 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         drawerToggle.syncState();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navView);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int id = item.getItemId();
+
+                if (id == R.id.start_grill_session) {
+                    startGrillSession();
+                } else if (id == R.id.previous_grill_sessions) {
+
+                } else if (id == R.id.feedback) {
+
+                } else if (id == R.id.settings) {
+
+                }
+
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            }
+        });
 
         //Get an instance of the MainPresenter
         //Parameters - Repository - Instance of the Repository
@@ -195,6 +219,11 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private void startGrillSession() {
+        Intent startSessionIntent = new Intent(this, GrillSessionActivity.class);
+        startActivity(startSessionIntent);
     }
 
     // Method that implements action bar navigation drawer icon when clicked on

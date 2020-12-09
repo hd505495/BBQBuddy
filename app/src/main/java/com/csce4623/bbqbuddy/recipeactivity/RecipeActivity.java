@@ -27,6 +27,10 @@ public class RecipeActivity extends AppCompatActivity implements RecipeContract.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recipe_layout);
+
+        assert getSupportActionBar() != null;   //null check
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Recipe");
         ImageView recipeImage = (ImageView) findViewById(R.id.imageView);
 
         mPresenter = new RecipePresenter(Repository.getInstance(new AppExecutors(),getApplicationContext()), this);

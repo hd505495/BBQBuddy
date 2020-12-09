@@ -24,7 +24,9 @@
             android:label="@string/title_activity_set_timers">
         </activity>
       
-        <activity android:name=".grillsessionactivity.GrillSessionActivity"></activity>
+        <activity android:name=".grillsessionactivity.GrillSessionActivity">
+
+        </activity>
 
         <activity android:name=".recipeactivity.RecipeActivity" ></activity>
 
@@ -36,8 +38,9 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".mainactivity.MainActivity">
-                  <intent-filter>
+        <activity android:name=".mainactivity.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -1,5 +1,8 @@
 package com.csce4623.bbqbuddy.recipeactivity;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
@@ -10,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.csce4623.bbqbuddy.R;
 import com.csce4623.bbqbuddy.data.Repository;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import util.AppExecutors;
@@ -18,35 +22,50 @@ public class RecipeActivity extends AppCompatActivity implements RecipeContract.
 
     private RecipeContract.Presenter mPresenter;
 
+    ArrayList<String> recipeImageURL = new ArrayList<>();
+    ArrayList<String> recipeTitle = new ArrayList<>();
     ArrayList<String> recipeIngredientsName = new ArrayList<>();
     ArrayList<String> recipeIngredientsAmountValue = new ArrayList<>();
     ArrayList<String> recipeIngredientsAmountUnit = new ArrayList<>();
     Integer position;
 
+    TextView tvRecipeTitle;
+    TextView tvIngredients;
+    ImageView recipeImage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recipe_layout);
-        ImageView recipeImage = (ImageView) findViewById(R.id.imageView);
+
+        assert getSupportActionBar() != null;   //null check
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Recipe");
+        recipeImage = (ImageView) findViewById(R.id.imageView);
+        tvRecipeTitle = (TextView) findViewById(R.id.tvRecipeTitle);
 
         mPresenter = new RecipePresenter(Repository.getInstance(new AppExecutors(),getApplicationContext()), this);
 
-        // Commented out for now. Throws errors.
-        //int imageResource = getResources().getIdentifier("drawable/cornbread_stock_img", null, this.getPackageName());
-        //recipeImage.setImageResource(imageResource);
 
         ///////////////////
 
-        // Bind tvIngredients to its respective view
-        TextView tvIngredients = (TextView) findViewById(R.id.tvIngredients);
-
-        // ArrayLists that contain the recipe ingredient name, value of ingredient, and unit of ingredient
+                // ArrayLists that contain the recipe image, ingredient name, value of ingredient, and unit of ingredient
+        recipeImageURL = (ArrayList<String>) getIntent().getSerializableExtra("imageURL");
+        recipeTitle = (ArrayList<String>) getIntent().getSerializableExtra("recipeTitle");
         recipeIngredientsName = (ArrayList<String>) getIntent().getSerializableExtra("ingredientsName");
         recipeIngredientsAmountValue = (ArrayList<String>) getIntent().getSerializableExtra("ingredientsAmountValue");
         recipeIngredientsAmountUnit = (ArrayList<String>) getIntent().getSerializableExtra("ingredientsAmountUnit");
 
         // Position variable used to determine which recipe was clicked on
         position = (Integer) getIntent().getIntExtra("position", 0);
+
+        // Bind tvIngredients to its respective view
+        tvIngredients = (TextView) findViewById(R.id.tvIngredients);
+
+        String imageURL = recipeImageURL.get(position);
+        if (imageURL != null) {
+            new DownloadImageTask(recipeImage).execute(imageURL);
+        }
 
         // String to hold entire ingredient info on a recipe
         String ingredientInfo = "";
@@ -58,8 +77,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipeContract.
         Log.d("IngredientInfo", ingredientInfo);
 
         tvIngredients.setText(ingredientInfo);
-
-
+        tvRecipeTitle.setText(recipeTitle.get(position));
     }
 
     @Override
@@ -76,6 +94,32 @@ public class RecipeActivity extends AppCompatActivity implements RecipeContract.
     @Override
     public void setPresenter(RecipeContract.Presenter presenter) {
         mPresenter = presenter;
+    }
+
+    /**
+     * Downloads web image from URL, loads bitmap into imageview
+     */
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap bmp = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                bmp = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return bmp;
+        }
+        protected void onPostExecute(Bitmap result) {
+            bmImage.setImageBitmap(result);
+        }
     }
 
 }

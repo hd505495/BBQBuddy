@@ -30,7 +30,7 @@ public class ActiveSessionActivity extends AppCompatActivity implements ActiveSe
     // Presenter instance for view
     private ActiveSessionContract.Presenter mPresenter;
     // Inner class instance for ListView adapter
-    private ActiveSessionActivity.TimerItemsAdapter mTimerItemsAdapter;
+    private TimerItemsAdapter mTimerItemsAdapter;
 
     private List<TimerItem> timersList = new ArrayList<TimerItem>();
 
@@ -58,16 +58,20 @@ public class ActiveSessionActivity extends AppCompatActivity implements ActiveSe
             }
         });
 
-        // *** TODO: REMINDER LIST DOESN'T SHOW UP
         // Set up timers list view
         listView = (ListView) findViewById(R.id.LVSessionTimersList);
         listView.setAdapter(mTimerItemsAdapter);
 
         Intent callingIntent = getIntent();
         if (callingIntent != null) {
-            if (callingIntent.hasExtra("timerList")) {
-                timersList = (List<TimerItem>) callingIntent.getSerializableExtra("timerList");
+            if (callingIntent.hasExtra("timersList")) {
+                Log.d("ActiveSessionActivity", "callingIntent has timerList");
+                timersList = (List<TimerItem>) callingIntent.getSerializableExtra("timersList");
+                Log.d("ActiveSessionActivity", "timersList from callingIntent size is " + timersList.size());
                 showTimerItems();
+            } else {
+                Log.d("ActiveSessionActivity", "callingIntent DOES NOT HAVE timerList");
+
             }
             if (callingIntent.hasExtra("meat")){
                 meat = (String) callingIntent.getStringExtra("meat");
@@ -80,19 +84,19 @@ public class ActiveSessionActivity extends AppCompatActivity implements ActiveSe
 
     private void setMeatDisplay() {
         TVMeatTitle.setText(meat);
-        if (meat == "chicken") {
+        if (meat.equals("chicken")) {
             int imageResource = getResources().getIdentifier("drawable/chicken_stock_img", null, this.getPackageName());
             IVMeatDisplay.setImageResource(imageResource);
         }
-        else if (meat == "beef") {
+        else if (meat.equals("beef")) {
             int imageResource = getResources().getIdentifier("drawable/beef_stock_img", null, this.getPackageName());
             IVMeatDisplay.setImageResource(imageResource);
         }
-        else if (meat == "fish") {
+        else if (meat.equals("fish")) {
             int imageResource = getResources().getIdentifier("drawable/fish_stock_img", null, this.getPackageName());
             IVMeatDisplay.setImageResource(imageResource);
         }
-        else if (meat == "pork") {
+        else if (meat.equals("pork")) {
             int imageResource = getResources().getIdentifier("drawable/pork_stock_img", null, this.getPackageName());
             IVMeatDisplay.setImageResource(imageResource);
         }
@@ -120,7 +124,7 @@ public class ActiveSessionActivity extends AppCompatActivity implements ActiveSe
     /**
      * instance of TimerItemsListener with onTimerItemClick function
      */
-    ActiveSessionActivity.TimerItemsListener mTimerItemsListener = new ActiveSessionActivity.TimerItemsListener() {
+    TimerItemsListener mTimerItemsListener = new TimerItemsListener() {
         @Override
         public void onTimerItemClick(TimerItem clickedTimerItem) {
 ////////////////////////////// TODO: timer item click listener
@@ -135,14 +139,14 @@ public class ActiveSessionActivity extends AppCompatActivity implements ActiveSe
         //List of all TimerItems
         private List<TimerItem> mTimerItems;
         // Listener for onItemClick events
-        private ActiveSessionActivity.TimerItemsListener mItemListener;
+        private TimerItemsListener mItemListener;
 
         /**
          * Constructor for the adapter
          * @param timerItems - List of initial items
          * @param itemListener - onItemClick listener
          */
-        public TimerItemsAdapter(List<TimerItem> timerItems, ActiveSessionActivity.TimerItemsListener itemListener) {
+        public TimerItemsAdapter(List<TimerItem> timerItems, TimerItemsListener itemListener) {
             setList(timerItems);
             mItemListener = itemListener;
         }
@@ -153,7 +157,7 @@ public class ActiveSessionActivity extends AppCompatActivity implements ActiveSe
          */
         public void replaceData(List<TimerItem> timerItems) {
             setList(timerItems);
-            Log.d("ActiveSessionActivity", "loading listview with timerItems list in replaceData in adapter");
+            Log.d("ActiveSessionActivity", "loading listview with timerItems list in replaceData in adapter // timerItems.size() == " + timerItems.size());
             notifyDataSetChanged();
         }
 

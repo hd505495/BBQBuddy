@@ -47,9 +47,6 @@ import util.AppExecutors;
 
 public class MainActivity extends AppCompatActivity implements MainContract.View, RecyclerViewAdapter.ItemClickListener {
 
-    // Inner class instance for ListView adapter
-    //private MainActivity.ItemsAdapter mItemsAdapter;
-
     private MainContract.Presenter mPresenter;
 
     // SearchView (not implemented)
@@ -95,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
 
+        assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.navView);

@@ -32,8 +32,8 @@ public class GrillSessionActivity extends AppCompatActivity implements GrillSess
 
     private static final int MEAT_SELECT_REQUEST = 1;
     private static final int SET_TIMERS_REQUEST = 2;
-    private static final int START_SESSION_REQUEST = 3;
-
+    private static final int CONNECT_BLUETOOTH_REQUEST = 3;
+    private static final int PICK_RECIPE_REQUEST = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,17 +82,17 @@ public class GrillSessionActivity extends AppCompatActivity implements GrillSess
             @Override
             public void onClick(View view) {
                 // launch grill session
-                launchGrillSession(START_SESSION_REQUEST);
+                launchGrillSession();
             }
         });
     }
 
-    private void launchGrillSession(int requestCode) {
+    private void launchGrillSession() {
         Intent startSessionIntent = new Intent(this, ActiveSessionActivity.class);
         startSessionIntent.putExtra("timersList", (ArrayList<TimerItem>) timersList);
         Log.d("GrillSessionActivity", "timerList put into startSessionIntent has size " + timersList.size());
         startSessionIntent.putExtra("meat", meat);
-        startActivityForResult(startSessionIntent, requestCode);
+        startActivity(startSessionIntent);
     }
 
     private void launchSetTimersActivity(int requestCode) {

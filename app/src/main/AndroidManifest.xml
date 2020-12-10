@@ -28,7 +28,9 @@
 
         </activity>
 
-        <activity android:name=".recipeactivity.RecipeActivity" ></activity>
+        <activity android:name=".recipeactivity.RecipeActivity"
+            android:parentActivityName=".mainactivity.MainActivity">
+        </activity>
 
         <activity android:name=".MeatSelectActivity" />
 

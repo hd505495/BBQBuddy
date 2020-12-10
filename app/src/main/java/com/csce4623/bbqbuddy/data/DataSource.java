@@ -16,7 +16,7 @@ public interface DataSource {
      */
     interface LoadItemsCallback {
 
-        void onItemsLoaded(List<Item> Items);
+        void onItemsLoaded(List<Session> sessions);
 
         void onDataNotAvailable();
     }
@@ -27,7 +27,7 @@ public interface DataSource {
      */
     interface GetItemCallback {
 
-        void onItemLoaded(Item task);
+        void onItemLoaded(Session task);
 
         void onDataNotAvailable();
     }
@@ -48,15 +48,17 @@ public interface DataSource {
     /**
      * SaveItem saves an Item to the database - No callback (should be implemented for
      * remote databases)
-     * @param Item
+     * @param Session
      */
-    void saveItem(@NonNull final Item Item);
+    void saveItem(@NonNull final Session Session);
 
     /**
      * CreateItem adds an Item to the database - No callback (should be implemented for
      * remote databases)
-     * @param Item
+     * @param Session
      */
-    void createItem(@NonNull Item Item);
+    void createItem(@NonNull Session Session);
+
+    void deleteItem(@NonNull final long id);
 
 }

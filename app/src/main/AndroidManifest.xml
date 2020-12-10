@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.csce4623.bbqbuddy">
+
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -10,17 +11,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat">
-        <activity android:name=".activesessionactivity.ActiveSessionActivity"></activity>
+        <activity android:name=".savedsessionsactivity.SavedSessionsActivity"></activity>
+        <activity android:name=".activesessionactivity.ActiveSessionActivity" />
 
         <receiver
             android:name=".AlarmReceiver"
             android:enabled="true"
-            android:exported="true"></receiver>
+            android:exported="true" />
 
-        <activity android:name=".settimersactivity.NewTimerActivity"></activity>
-      
+        <activity android:name=".settimersactivity.NewTimerActivity" />
         <activity
             android:name=".settimersactivity.SetTimersActivity"
+
             android:label="@string/title_activity_set_timers">
         </activity>
       
@@ -28,17 +30,13 @@
 
         </activity>
 
-        <activity android:name=".recipeactivity.RecipeActivity" ></activity>
+        <activity android:name=".recipeactivity.RecipeActivity"
+            android:parentActivityName=".mainactivity.MainActivity">
+        </activity>
 
         <activity android:name=".MeatSelectActivity" />
-
-        <provider
-            android:name=".data.Provider"
-            android:authorities="com.hwdykes.bbqbuddy.data"
-            android:enabled="true"
-            android:exported="true" />
-
-        <activity android:name=".mainactivity.MainActivity"
+        <activity
+            android:name=".mainactivity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,7 +44,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

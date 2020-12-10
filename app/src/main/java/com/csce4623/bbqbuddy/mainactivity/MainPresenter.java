@@ -5,7 +5,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.csce4623.bbqbuddy.data.DataSource;
-import com.csce4623.bbqbuddy.data.Item;
+import com.csce4623.bbqbuddy.data.Session;
 import com.csce4623.bbqbuddy.data.Repository;
 
 import java.util.List;
@@ -45,7 +45,7 @@ public class MainPresenter implements MainContract.Presenter {
         Log.d("Presenter","Loading Items");
         mRepository.getItems(new DataSource.LoadItemsCallback() {
             @Override
-            public void onItemsLoaded(List<Item> Items) {
+            public void onItemsLoaded(List<Session> sessions) {
                 Log.d("PRESENTER","Loaded");
 
                 //mView.showItems(Items);

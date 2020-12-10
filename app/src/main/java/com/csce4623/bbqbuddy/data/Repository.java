@@ -1,13 +1,14 @@
 package com.csce4623.bbqbuddy.data;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 import android.util.Log;
+
 import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import util.AppExecutors;
 
 /**
@@ -15,6 +16,7 @@ import util.AppExecutors;
  */
 public class Repository implements DataSource {
 
+    private SessionDao sessionDao;
     //Memory leak here by including the context - Fix this at some point
     private static volatile Repository INSTANCE;
 
@@ -29,6 +31,7 @@ public class Repository implements DataSource {
      * @param context
      */
     private Repository(@NonNull AppExecutors appExecutors, @NonNull Context context){
+        sessionDao = SessionDatabase.getInstance(context).getSessionDao();
         mAppExecutors = appExecutors;
         mContext = context;
     }
@@ -60,14 +63,10 @@ public class Repository implements DataSource {
         Runnable runnable = new Runnable(){
             @Override
             public void run() {
-                String[] projection = {
-                        Item.ITEM_ID,
-                        Item.ITEM_TITLE}; /*,
-                        ToDoItem.TODOITEM_CONTENT,
-                        ToDoItem.TODOITEM_DUEDATE,
-                        ToDoItem.TODOITEM_COMPLETED}; */
-                final Cursor c = mContext.getContentResolver().query(Uri.parse("content://" + Provider.AUTHORITY + "/" + Provider.ITEM_TABLE_NAME), projection, null, null, null);
-                final List<Item> Items = new ArrayList<Item>(0);
+
+                final Cursor c = sessionDao.findAll();
+                final List<Session> sessions = new ArrayList<Session>(0);
+
                 mAppExecutors.mainThread().execute(new Runnable() {
                     @Override
                     public void run() {
@@ -75,16 +74,16 @@ public class Repository implements DataSource {
                             callback.onDataNotAvailable();
                         } else{
                             while(c.moveToNext()) {
-                                Item item = new Item();
-                                item.setId(c.getInt(c.getColumnIndex(Item.ITEM_ID)));
-                                item.setTitle(c.getString(c.getColumnIndex(Item.ITEM_TITLE))); /*
-                                item.setContent(c.getString(c.getColumnIndex(ToDoItem.TODOITEM_CONTENT)));
-                                item.setDueDate(c.getLong(c.getColumnIndex(ToDoItem.TODOITEM_DUEDATE)));
-                                item.setCompleted(c.getInt(c.getColumnIndex(ToDoItem.TODOITEM_COMPLETED)) > 0); */
-                                Items.add(item);
+                                Session session = new Session();
+                                session.setId(c.getInt(c.getColumnIndex(Session.SESSION_ID)));
+                                session.setDate(c.getLong(c.getColumnIndex(Session.SESSION_DATE)));
+                                session.setMeat(c.getString(c.getColumnIndex(Session.SESSION_MEAT)));
+                                //session.setTimers((List<TimerItem>) (c.getColumnIndex(Session.SESSION_TIMERS)));
+                                session.setNotes(c.getString(c.getColumnIndex(Session.SESSION_NOTES)));
+                                sessions.add(session);
                             }
                             c.close();
-                            callback.onItemsLoaded(Items);
+                            callback.onItemsLoaded(sessions);
                         }
                     }
                 });
@@ -106,22 +105,16 @@ public class Repository implements DataSource {
 
     /**
      * saveItem runs contentProvider update in separate thread
-     * @param Item
+     * @param session
      */
     @Override
-    public void saveItem(@NonNull final Item Item) {
+    public void saveItem(@NonNull final Session session) {
         Log.d("REPOSITORY","SaveItem");
         Runnable runnable = new Runnable(){
             @Override
             public void run() {
-                ContentValues myCV = new ContentValues();
-                myCV.put(Item.ITEM_ID, Item.getId());
-                myCV.put(Item.ITEM_TITLE, Item.getTitle()); /*
-                myCV.put(ToDoItem.TODOITEM_CONTENT,toDoItem.getContent());
-                myCV.put(ToDoItem.TODOITEM_DUEDATE,toDoItem.getDueDate());
-                myCV.put(ToDoItem.TODOITEM_COMPLETED,toDoItem.getCompleted()); */
-                final int numUpdated = mContext.getContentResolver().update(Uri.parse("content://" + Provider.AUTHORITY + "/" + Provider.ITEM_TABLE_NAME), myCV,null,null);
-                Log.d("REPOSITORY","Update Item updated " + String.valueOf(numUpdated) + " rows");
+                final int numUpdated = sessionDao.update(session);
+                Log.d("REPOSITORY","Update Session updated " + String.valueOf(numUpdated) + " rows");
             }
         };
         mAppExecutors.diskIO().execute(runnable);
@@ -130,21 +123,33 @@ public class Repository implements DataSource {
 
     /**
      * createItem runs contentProvider insert in separate thread
-     * @param Item
+     * @param session
      */
     @Override
-    public void createItem(@NonNull final Item Item) {
+    public void createItem(@NonNull final Session session) {
         Log.d("REPOSITORY","CreateItem");
         Runnable runnable = new Runnable(){
             @Override
             public void run() {
-                ContentValues myCV = new ContentValues();
-                myCV.put(Item.ITEM_TITLE, Item.getTitle()); /*
-                myCV.put(ToDoItem.TODOITEM_CONTENT,toDoItem.getContent());
-                myCV.put(ToDoItem.TODOITEM_DUEDATE,toDoItem.getDueDate());
-                myCV.put(ToDoItem.TODOITEM_COMPLETED,toDoItem.getCompleted()); */
-                final Uri uri = mContext.getContentResolver().insert(Uri.parse("content://" + Provider.AUTHORITY + "/" + Provider.ITEM_TABLE_NAME), myCV);
-                Log.d("REPOSITORY","Create Item finished with URI" + uri.toString());
+                final long id = sessionDao.insert(session);
+                Log.d("REPOSITORY","Create Item finished with id" + id);
+            }
+        };
+        mAppExecutors.diskIO().execute(runnable);
+
+    }
+
+    @Override
+    public void deleteItem(@NonNull final long id) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                int isDeleted = sessionDao.delete(id);
+                if (isDeleted == 0) {
+                    Log.d("REPOSITORY", "Not Deleted");
+                } else {
+                    Log.d("REPOSITORY", "Deleted");
+                }
             }
         };
         mAppExecutors.diskIO().execute(runnable);

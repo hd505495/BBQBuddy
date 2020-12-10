@@ -1,7 +1,9 @@
 package com.csce4623.bbqbuddy.mainactivity;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -46,27 +48,21 @@ import util.AppExecutors;
 public class MainActivity extends AppCompatActivity implements MainContract.View, RecyclerViewAdapter.ItemClickListener {
 
     private MainContract.Presenter mPresenter;
-    // Inner class instance for ListView adapter
-    //private MainActivity.ItemsAdapter mItemsAdapter;
 
+    // SearchView (not implemented)
     SearchView searchView;
 
+    // Variables for the navigation drawer and an actionbar toggle
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
 
+    // RecyclerView adapter for displaying recipes
     RecyclerViewAdapter rvAdapter;
 
-
+    // Global ArrayLists to hold recipe ID, title, and imageURL
     ArrayList<String> recipeID = new ArrayList<>();
     ArrayList<String> recipeTitle = new ArrayList<>();
     ArrayList<String> recipeImageURL = new ArrayList<>();
-    ArrayList<String> recipeIngredientsName = new ArrayList<>();
-    ArrayList<String> recipeIngredientsAmountValue = new ArrayList<>();
-    ArrayList<String> recipeIngredientsAmountUnit = new ArrayList<>();
-    ArrayList<String> recipeNutritionTitles = new ArrayList<>();
-    ArrayList<String> recipeNutritionValues = new ArrayList<>();
-    ArrayList<String> recipeInstructionsSteps = new ArrayList<>();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +75,10 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         // Set toolbar title color
         toolbar.setTitleTextColor(Color.parseColor("#ffffff"));
 
+        // Set toolbar background to match theme of other activities
+        toolbar.setBackground(new ColorDrawable(Color.DKGRAY));
+
+        // Set actionbar to our toolbar
         setSupportActionBar(toolbar);
 
         // Create navigation drawer
@@ -88,9 +88,11 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         // Set navigation drawer button and arrow color
         drawerToggle.getDrawerArrowDrawable().setColor(Color.parseColor("#ffffff"));
 
+        // Add drawerListener and sync the state
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
 
+        assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.navView);
@@ -121,21 +123,21 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         // Repository needs the application context to be able to make calls to the ContentProvider
         mPresenter = new MainPresenter(Repository.getInstance(new AppExecutors(),getApplicationContext()), this);
 
-        ////////////////////
-        // Get recipe ID, title, and image URL (not implemented yet)
-        ///////////////////
-        ///////////////////
+        //////////////////////////////////////
+        // Get recipe ID, title, and image URL
+        /////////////////////////////////////
+        ///////////////////////////////////////////////////////
         // On click events handled by OnItemClick method below
-        //////////////////
+        //////////////////////////////////////////////////////
 
-        // Local variables to hold id and title
+        // Local variables to hold id, title, and imageURL
         String id = null;
         String title = null;
         String imageURL = null;
 
         try {
             // Get recipe id and title from URL
-            String jsonRecipeData = new JsonTask().execute("https://api.spoonacular.com/recipes/complexSearch?apiKey=3fe88830eb2a4d98ab736e2da8997404&query=bbq&sort=random&number=1").get();
+            String jsonRecipeData = new JsonTask().execute("https://api.spoonacular.com/recipes/complexSearch?apiKey=3fe88830eb2a4d98ab736e2da8997404&query=bbq&sort=random&number=10").get();
             JSONObject jsonRecipeDataObject = new JSONObject(jsonRecipeData);
             JSONArray jsonRecipeDataArray = jsonRecipeDataObject.getJSONArray("results");
 
@@ -150,13 +152,28 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 title = jsonRecipeDataArray.getJSONObject(i).getString("title");
                 imageURL = jsonRecipeDataArray.getJSONObject(i).getString("image");
 
-                Log.d("id", id);
-                Log.d("title", title);
-
                 recipeID.add(id);
                 recipeTitle.add(title);
                 recipeImageURL.add(imageURL);
             }
+
+            //////////////////////////////////
+            // Logging for recipe id and title
+            //////////////////////////////////
+            String logID = "";
+            String logTitle = "";
+
+            for(int i = 0; i < recipeID.size(); i++) {
+                logID = logID + recipeID.get(i) + ", ";
+            }
+
+            for(int j = 0; j < recipeTitle.size(); j++) {
+                logTitle = logTitle + recipeTitle.get(j) + ", ";
+            }
+
+            Log.d("recipeID List", logID);
+            Log.d("recipeTitle List", logTitle);
+            /////////////////////////////////
 
             // Configure the recycler view and set the adapter
             RecyclerView recyclerView = findViewById(R.id.recyclerView);
@@ -168,85 +185,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
             // Add a divider between TextView rows
             recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
 
-
-            ///////////////////////
-            // Get recipe ingredient information
-            //////////////////////
-
-            // Local variables to hold name and amount
-            String name = null;
-            String amountValue = null;
-            String amountUnit = null;
-
-            // Get recipe ingredients from URL based on recipe ID
-            // Get recipe ingredient name and amount from URL
-            for(int i = 0; i < recipeID.size(); i++) {
-
-                String jsonIngredientData = new JsonTask().execute("https://api.spoonacular.com/recipes/" + recipeID.get(i) + "/ingredientWidget.json?apiKey=3fe88830eb2a4d98ab736e2da8997404").get();
-                JSONObject jsonIngredientDataObject = new JSONObject(jsonIngredientData);
-                JSONArray jsonIngredientDataArray = jsonIngredientDataObject.getJSONArray("ingredients");
-
-                // Logging to check the contents of jsonIngredientDataArray
-                Log.d("IngredientArray", jsonIngredientDataArray.toString());
-
-                // Loop through acquired JSONArray and grab id and title of each recipe
-                // Add to respective ArrayLists
-                for(int j =0; j < jsonIngredientDataArray.length(); j++) {
-
-                    name = jsonIngredientDataArray.getJSONObject(j).getString("name");
-                    amountValue = jsonIngredientDataArray.getJSONObject(j).getJSONObject("amount").getJSONObject("metric").getString("value");
-                    amountUnit = jsonIngredientDataArray.getJSONObject(j).getJSONObject("amount").getJSONObject("metric").getString("unit");
-
-                    Log.d("name", name);
-                    Log.d("amountValue", amountValue);
-                    Log.d("amountUnit", amountUnit);
-
-                    recipeIngredientsName.add(name);
-                    recipeIngredientsAmountValue.add(amountValue);
-                    recipeIngredientsAmountUnit.add(amountUnit);
-                }
-            }
-
-            // Get nutrition info from URL
-            for(int i = 0; i < recipeID.size(); i++) {
-
-                //String jsonNutritionData = new JsonTask().execute("https://api.spoonacular.com/recipes/informationBulk?apiKey=3fe88830eb2a4d98ab736e2da8997404&ids=" + recipeID.get(i)).get();
-                String jsonNutritionData = new JsonTask().execute("https://api.spoonacular.com/recipes/" + recipeID.get(i) + "/nutritionWidget.json?apiKey=3fe88830eb2a4d98ab736e2da8997404").get();
-                JSONObject jsonNutritionDataObject = new JSONObject(jsonNutritionData);
-
-                // Logging to check the contents of jsonIngredientDataArray
-                Log.d("RecipeInfoplusNutString", jsonNutritionDataObject.toString());
-
-                String calories = jsonNutritionDataObject.getString("calories");
-                recipeNutritionTitles.add("calories");
-                recipeNutritionValues.add(calories);
-                String carbs = jsonNutritionDataObject.getString("carbs");
-                recipeNutritionTitles.add("carbs");
-                recipeNutritionValues.add(carbs);
-                String fat = jsonNutritionDataObject.getString("fat");
-                recipeNutritionTitles.add("fat");
-                recipeNutritionValues.add(fat);
-                String protein = jsonNutritionDataObject.getString("protein");
-                recipeNutritionTitles.add("protein");
-                recipeNutritionValues.add(protein);
-
-            }
-
-            for (int i = 0; i < recipeID.size(); i++) {
-                String jsonInstructionData = new JsonTask().execute("https://api.spoonacular.com/recipes/" + recipeID.get(i) + "/analyzedInstructions?apiKey=3fe88830eb2a4d98ab736e2da8997404").get();
-                //JSONObject jsonInstructionsObj = new JSONObject(jsonInstructionData);
-                JSONArray jsonInstructionsArray = new JSONArray(jsonInstructionData);
-
-                Log.d("RecipeInstructionString", jsonInstructionsArray.toString());
-
-                JSONArray tempArray = jsonInstructionsArray.getJSONObject(0).getJSONArray("steps");
-
-                for (int j = 0; j < tempArray.length(); j++) {
-                    recipeInstructionsSteps.add(tempArray.getJSONObject(j).getString("step"));
-                }
-
-            }
-
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -256,6 +194,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         }
     }
 
+    // Method to start the grill session activity
     private void startGrillSession() {
         Intent startSessionIntent = new Intent(this, GrillSessionActivity.class);
         startActivity(startSessionIntent);
@@ -286,9 +225,92 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         mPresenter.start();
     }
 
+    // Method to handle onClickEvents for recipe items in the recycler view
     @Override
     public void onItemClick(View view, int position) {
         Toast.makeText(this, "You clicked " + rvAdapter.getItem(position) + " on row number " + position, Toast.LENGTH_SHORT).show();
+
+        // Local ArrayLists to hold ingredients, nutrition, and instructions information
+        ArrayList<String> recipeIngredientsName = new ArrayList<>();
+        ArrayList<String> recipeIngredientsAmountValue = new ArrayList<>();
+        ArrayList<String> recipeIngredientsAmountUnit = new ArrayList<>();
+        ArrayList<String> recipeNutritionTitles = new ArrayList<>();
+        ArrayList<String> recipeNutritionValues = new ArrayList<>();
+        ArrayList<String> recipeInstructionsSteps = new ArrayList<>();
+
+        // Local variables to hold name and amount
+        String name = null;
+        String amountValue = null;
+        String amountUnit = null;
+
+        try {
+            // Get recipe ingredients from URL based on recipe ID
+            // Get recipe ingredient name and amount from URL
+            String jsonIngredientData = new JsonTask().execute("https://api.spoonacular.com/recipes/" + recipeID.get(position) + "/ingredientWidget.json?apiKey=3fe88830eb2a4d98ab736e2da8997404").get();
+            JSONObject jsonIngredientDataObject = new JSONObject(jsonIngredientData);
+            JSONArray jsonIngredientDataArray = jsonIngredientDataObject.getJSONArray("ingredients");
+
+            // Logging to check the contents of jsonIngredientDataArray
+            Log.d("IngredientArray", jsonIngredientDataArray.toString());
+
+            // Loop through acquired JSONArray and grab id and title of each recipe
+            // Add to respective ArrayLists
+            for (int j = 0; j < jsonIngredientDataArray.length(); j++) {
+
+                name = jsonIngredientDataArray.getJSONObject(j).getString("name");
+                amountValue = jsonIngredientDataArray.getJSONObject(j).getJSONObject("amount").getJSONObject("metric").getString("value");
+                amountUnit = jsonIngredientDataArray.getJSONObject(j).getJSONObject("amount").getJSONObject("metric").getString("unit");
+
+                Log.d("name", name);
+                Log.d("amountValue", amountValue);
+                Log.d("amountUnit", amountUnit);
+
+                recipeIngredientsName.add(name);
+                recipeIngredientsAmountValue.add(amountValue);
+                recipeIngredientsAmountUnit.add(amountUnit);
+            }
+
+            // Get nutrition info from URL
+            String jsonNutritionData = new JsonTask().execute("https://api.spoonacular.com/recipes/" + recipeID.get(position) + "/nutritionWidget.json?apiKey=3fe88830eb2a4d98ab736e2da8997404").get();
+            JSONObject jsonNutritionDataObject = new JSONObject(jsonNutritionData);
+
+            // Logging to check the contents of jsonIngredientDataArray
+            Log.d("RecipeInfoplusNutString", jsonNutritionDataObject.toString());
+
+            String calories = jsonNutritionDataObject.getString("calories");
+            recipeNutritionTitles.add("calories");
+            recipeNutritionValues.add(calories);
+            String carbs = jsonNutritionDataObject.getString("carbs");
+            recipeNutritionTitles.add("carbs");
+            recipeNutritionValues.add(carbs);
+            String fat = jsonNutritionDataObject.getString("fat");
+            recipeNutritionTitles.add("fat");
+            recipeNutritionValues.add(fat);
+            String protein = jsonNutritionDataObject.getString("protein");
+            recipeNutritionTitles.add("protein");
+            recipeNutritionValues.add(protein);
+
+            // Get instructions info from URL
+            String jsonInstructionData = new JsonTask().execute("https://api.spoonacular.com/recipes/" + recipeID.get(position) + "/analyzedInstructions?apiKey=3fe88830eb2a4d98ab736e2da8997404").get();
+
+            //JSONObject jsonInstructionsObj = new JSONObject(jsonInstructionData);
+            JSONArray jsonInstructionsArray = new JSONArray(jsonInstructionData);
+
+            Log.d("RecipeInstructionString", jsonInstructionsArray.toString());
+
+            JSONArray tempArray = jsonInstructionsArray.getJSONObject(0).getJSONArray("steps");
+
+            for (int j = 0; j < tempArray.length(); j++) {
+                recipeInstructionsSteps.add(tempArray.getJSONObject(j).getString("step"));
+            }
+
+        }  catch (ExecutionException e) {
+            e.printStackTrace();
+        }  catch (InterruptedException e) {
+            e.printStackTrace();
+        }  catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         Intent intent = new Intent(MainActivity.this, RecipeActivity.class);
         intent.putExtra("imageURL", recipeImageURL);

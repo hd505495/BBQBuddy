@@ -3,6 +3,7 @@ package com.csce4623.bbqbuddy.activesessionactivity;
 import androidx.annotation.NonNull;
 
 import com.csce4623.bbqbuddy.data.Repository;
+import com.csce4623.bbqbuddy.data.Session;
 
 public class ActiveSessionPresenter implements ActiveSessionContract.Presenter{
 
@@ -29,4 +30,8 @@ public class ActiveSessionPresenter implements ActiveSessionContract.Presenter{
         mView.showTimerItems();
     }
 
+    @Override
+    public void saveSessionToDB(Session session) {
+        mRepository.createItem(session);
+    }
 }

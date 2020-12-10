@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="4"
         android:text="TextView"
-        android:textSize="20sp" />
+        android:textSize="23sp" />
 
     <ImageView
         android:id="@+id/ivRecyclerRowImage"

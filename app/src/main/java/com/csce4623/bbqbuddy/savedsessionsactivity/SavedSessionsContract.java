@@ -1,22 +1,18 @@
-package com.csce4623.bbqbuddy.activesessionactivity;
+package com.csce4623.bbqbuddy.savedsessionsactivity;
 
-import com.csce4623.bbqbuddy.data.Session;
-
-public interface ActiveSessionContract {
+public interface SavedSessionsContract {
 
     interface View{
         /**
          * setPresenter - sets the presenter associated with a View
-         * @param presenter - the ActiveSessionContract.presenter instance
+         * @param presenter - the SavedSessionsContract.presenter instance
          */
-        void setPresenter(ActiveSessionContract.Presenter presenter);
+        void setPresenter(SavedSessionsContract.Presenter presenter);
 
         /**
          * showTimerItems - takes a list of timerItems and populates a ListView
          */
-        void showTimerItems();
-
-        void saveSession();
+        //void showTimerItems();
     }
 
     interface Presenter{
@@ -27,8 +23,6 @@ public interface ActiveSessionContract {
          * Ideally, should be coupled with a stop if any running tasks need to be destroyed.
          */
         void start();
-
-        void saveSessionToDB(Session session);
 
     }
 

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item>
+    <session>
         <shape android:shape="rectangle">
             <solid android:color="#808080" /> <!-- border color -->
         </shape>
-    </item>
+    </session>
 
-    <item
+    <session
         android:bottom="1dp"
         android:top="1dp"
         android:right="1dp"
@@ -14,5 +14,5 @@
         <shape android:shape="rectangle">
             <solid android:color="#FFFFFF" />  <!-- background color -->
         </shape>
-    </item>
+    </session>
 </layer-list>

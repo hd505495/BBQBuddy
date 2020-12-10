@@ -22,9 +22,18 @@
         <activity android:name=".settimersactivity.NewTimerActivity" />
         <activity
             android:name=".settimersactivity.SetTimersActivity"
-            android:label="@string/title_activity_set_timers"></activity>
-        <activity android:name=".grillsessionactivity.GrillSessionActivity"></activity>
-        <activity android:name=".recipeactivity.RecipeActivity" />
+
+            android:label="@string/title_activity_set_timers">
+        </activity>
+      
+        <activity android:name=".grillsessionactivity.GrillSessionActivity">
+
+        </activity>
+
+        <activity android:name=".recipeactivity.RecipeActivity"
+            android:parentActivityName=".mainactivity.MainActivity">
+        </activity>
+
         <activity android:name=".MeatSelectActivity" />
         <activity
             android:name=".mainactivity.MainActivity"

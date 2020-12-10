@@ -22,6 +22,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipeContract.
 
     private RecipeContract.Presenter mPresenter;
 
+    // ArrayLists to hold recipe information
     ArrayList<String> recipeImageURL = new ArrayList<>();
     ArrayList<String> recipeTitle = new ArrayList<>();
     ArrayList<String> recipeIngredientsName = new ArrayList<>();
@@ -30,8 +31,11 @@ public class RecipeActivity extends AppCompatActivity implements RecipeContract.
     ArrayList<String> recipeNutritionTitles = new ArrayList<>();
     ArrayList<String> recipeNutritionValues = new ArrayList<>();
     ArrayList<String> recipeInstructionsSteps = new ArrayList<>();
+
+    // Position of the item clicked in the recycler view
     Integer position;
 
+    // TextView and ImageView variables to be updated with recipe information
     TextView tvRecipeTitle;
     TextView tvIngredients;
     TextView tvNutrition;
@@ -53,10 +57,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipeContract.
 
         mPresenter = new RecipePresenter(Repository.getInstance(new AppExecutors(),getApplicationContext()), this);
 
-
-        ///////////////////
-
-                // ArrayLists that contain the recipe image, ingredient name, value of ingredient, and unit of ingredient
+        // ArrayLists that contain the recipe image, ingredient name, value of ingredient, and unit of ingredient
         recipeImageURL = (ArrayList<String>) getIntent().getSerializableExtra("imageURL");
         recipeTitle = (ArrayList<String>) getIntent().getSerializableExtra("recipeTitle");
         recipeIngredientsName = (ArrayList<String>) getIntent().getSerializableExtra("ingredientsName");
@@ -110,7 +111,6 @@ public class RecipeActivity extends AppCompatActivity implements RecipeContract.
         super.onResume();
         mPresenter.start();
     }
-
 
     /**
      * set the presenter for this view
